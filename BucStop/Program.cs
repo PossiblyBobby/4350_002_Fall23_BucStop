@@ -1,5 +1,5 @@
 using BucStop;
-// test comment GitHub hates me
+// test comment GitHub is a PITA
 /*
  * This is the base program which starts the project.
  */
