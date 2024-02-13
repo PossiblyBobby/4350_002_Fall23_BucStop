@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 
 namespace BucStop.Controllers
 {
+    //comment
     public class AccountController : Controller
     {
         public string email { get; set; } = string.Empty;
