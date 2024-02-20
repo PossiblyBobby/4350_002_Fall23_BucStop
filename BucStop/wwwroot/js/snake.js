@@ -161,5 +161,11 @@ document.addEventListener("keydown", (e) => {
   }
 });
 
+document.addEventListener("keydown", (e) => {
+    if (e.which === 37 || e.which === 38 || e.which === 39 || e.which === 40) {
+        e.preventDefault();
+    }
+});
+
 // Start the game loop
 requestAnimationFrame(gameLoop);

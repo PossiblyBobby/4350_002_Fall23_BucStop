@@ -32,14 +32,19 @@ namespace BucStop.Controllers
             return View();
         }
 
-        //Takes the user to the privacy policy page.
-        public IActionResult Privacy()
+        //Takes the user to the about us page.
+        public IActionResult About()
         {
             return View();
         }
 
         //Takes the user to the game criteria page.
         public IActionResult GameCriteria()
+        {
+            return View();
+        }
+
+        public IActionResult Legal()
         {
             return View();
         }
