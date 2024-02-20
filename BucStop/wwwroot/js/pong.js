@@ -7,6 +7,10 @@
  * Extended by Chris Seals and Jacob Klucher
  * 
  * Fall 2023, ETSU
+ * 
+ * Edited by Christian Crawford
+ * 
+ * Spring 2024, ETSU
  */
 
 const canvas = document.getElementById('game');
@@ -15,8 +19,8 @@ const grid = 15; // Standard size used by most elements. Also provides offset to
 const paddleWidth = grid * 5; // 75 normally
 const maxPaddleX = canvas.width - grid - paddleWidth; // The furthest that a paddle can move to the right
 
-var paddleSpeed = 6; // Speed that the paddle moves per tick
-var ballSpeed = 6; // Speed that the ball moves per tick
+var paddleSpeed = 3; // Speed that the paddle moves per tick
+var ballSpeed = 4; // Speed that the ball moves per tick
 var playerScore = 0;
 var computerScore = 0;
 var resetting = false;
@@ -74,7 +78,7 @@ function collides(obj1, obj2) {
 }
 
 // Add an AI-controlled paddle
-const aiPaddleSpeed = 2; // Adjust the AI paddle speed as needed
+const aiPaddleSpeed = 3; // Adjust the AI paddle speed as needed
 
 // Function to control the AI paddle
 function controlAIPaddle() {
@@ -99,14 +103,14 @@ function controlAIPaddle() {
 function resetGame() {
     // Reset the ball and paddle positions
     ball.x = canvas.width / 2 - grid / 2; // Adjust for grid size
-    ball.y = canvas.height / 2 - grid / 2; // Adjust for grid size
+    ball.y = canvas.height / 3 - grid / 2; // Ball set higher for more reaction time by the user
     // Recenter the two paddles
     topPaddle.x = canvas.width / 2 - paddleWidth / 2;
     bottomPaddle.x = canvas.width / 2 - paddleWidth / 2;
 
     // Reset the ball's velocity
     ball.dy = ballSpeed;
-    ball.dx = -ballSpeed;
+    ball.dx = Math.random() < .5 ? ballSpeed : -ballSpeed; // Randomizes ball direction per round
     resetting = false;
 }
 
@@ -118,8 +122,13 @@ function endGame() {
     // Display the winner
     const winner = playerScore === 7 ? "Player" : "Computer";
     context.font = '36px Arial';
-    context.fillText(`${ winner } wins!`, canvas.width / 2 - 100, canvas.height / 2);
-    
+    // If-statement for positioning how the winner is displayed
+    if (winner == "Player") {
+        context.fillText(`${winner} wins!`, canvas.width / 2 - 100, canvas.height / 2);
+    }
+    else {
+        context.fillText(`${winner} wins!`, canvas.width / 2 - 125, canvas.height / 2);
+    }
     // Stop the game loop
     cancelAnimationFrame(loop);
 }
@@ -196,7 +205,7 @@ function loop() {
     // Display the scores
     context.font = '24px Arial';
     context.fillText(`Player: ${ playerScore }`, 20, 30);
-    context.fillText(`Computer: ${ computerScore }`, canvas.width - 200, 30);
+    context.fillText(`Computer: ${ computerScore }`, canvas.width - 150, 30);
 
     // End the game if either player or computer reaches 7 points
     if (playerScore === 7 || computerScore === 7) {
