@@ -99,6 +99,7 @@ function checkCollision() {
   if (snake.cells[0].x === apple.x && snake.cells[0].y === apple.y) {
     snake.maxCells++;
       apple = { x: getRandomInt(0, 25) * grid, y: getRandomInt(0, 25) * grid };
+      // Increment scrore by one each time apple is ate
       score++;
   }
 
@@ -108,7 +109,7 @@ function checkCollision() {
       .slice(1)
       .some((cell) => cell.x === snake.x && cell.y === snake.y)
   ) {
-    resetGame();
+      resetGame();
   }
 }
 
@@ -130,7 +131,9 @@ function drawSnake() {
 function resetGame() {
   // Show game over message with a slight delay to ensure the canvas updates if needed
   setTimeout(() => {
-    alert("Game Over!\nFinal Score: " + score + "\nPress OK to restart.");
+      alert("Game Over!\nFinal Score: " + score + "\nPress OK to restart.");
+    // Reset score
+    score = 0;
     // Reset snake properties
     snake.x = 160;
     snake.y = 160;
