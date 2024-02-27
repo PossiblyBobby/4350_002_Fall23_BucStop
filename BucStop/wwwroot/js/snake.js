@@ -4,7 +4,7 @@
  * Original base game created by straker on GitHub:
  * https://gist.github.com/straker/81b59eecf70da93af396f963596dfdc5
  *
- * Improvements and modifications by Jean Bilong, Spring 2024, ETSU.
+ * Improvements and modifications by Jean Bilong and Christian Crawford, Spring 2024, ETSU.
  * Enhancements include modularization, use of ES6 features, improved game loop,
  * and additional game states for a better user experience.
  */
@@ -17,6 +17,11 @@ const context = canvas.getContext("2d");
 const grid = 16;
 // Frame counter to control game speed
 let count = 0;
+// Variable to keep track of score
+let score = 0;
+
+//font = '24px Arial';
+//fillText(`Score: ${playerScore}`, 20, 30);
 
 // Snake object with properties for position, direction, body cells, and size
 const snake = {
@@ -93,7 +98,9 @@ function checkCollision() {
   // Check collision with the apple
   if (snake.cells[0].x === apple.x && snake.cells[0].y === apple.y) {
     snake.maxCells++;
-    apple = { x: getRandomInt(0, 25) * grid, y: getRandomInt(0, 25) * grid };
+      apple = { x: getRandomInt(0, 25) * grid, y: getRandomInt(0, 25) * grid };
+      // Increment scrore by one each time apple is ate
+      score++;
   }
 
   // Check collision with itself, starting from the second cell
@@ -102,7 +109,7 @@ function checkCollision() {
       .slice(1)
       .some((cell) => cell.x === snake.x && cell.y === snake.y)
   ) {
-    resetGame();
+      resetGame();
   }
 }
 
@@ -124,7 +131,9 @@ function drawSnake() {
 function resetGame() {
   // Show game over message with a slight delay to ensure the canvas updates if needed
   setTimeout(() => {
-    alert("Game Over! Press OK to restart.");
+      alert("Game Over!\nFinal Score: " + score + "\nPress OK to restart.");
+    // Reset score
+    score = 0;
     // Reset snake properties
     snake.x = 160;
     snake.y = 160;
