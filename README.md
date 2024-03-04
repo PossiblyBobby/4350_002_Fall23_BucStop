@@ -1,9 +1,11 @@
 # BucStop
 ### A Team Bobby Project
 ### Members:
-> Dan Tucker, Isaac Simmons, Tyson Bailey
-> Anthony Vandergriff, Chris Boyle, Christian Crawford 
-> Grant Scutt, Jean Bilong, Jerry Galloway 
+> Dan Tucker,      Isaac Simmons,      Tyson Bailey,
+> 
+> Anthony Vandergriff,      Chris Boyle,      Christian Crawford,
+> 
+> Grant Scutt,      Jean Bilong,      Jerry Galloway 
 
 >  
 
