@@ -1,15 +1,10 @@
 # BucStop
 ### A Team Bobby Project
 ### Members:
-> PO Dan Tucker 
-SM Isaac Simmons 
-Dev Anthony Vandergriff 
-Dev Chris Boyle 
-Dev Chris@an Crawford 
-Dev Grant ScuD
-Dev Jean Bilong
-Dev Jerry Galloway 
-Dev Tyson Bailey
+> Dan Tucker, Isaac Simmons, Tyson Bailey
+> Anthony Vandergriff, Chris Boyle, Christian Crawford 
+> Grant Scutt, Jean Bilong, Jerry Galloway 
+
 >  
 
 #### CSCI 4350
