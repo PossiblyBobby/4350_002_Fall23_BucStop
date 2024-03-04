@@ -1,9 +1,17 @@
 # BucStop
 ### A Team Bobby Project
 ### Members:
-> Isaac Camacho, Richard Cashion, Dylan Cowell, Thomas Foreman,
-> Dionte Jones, Matt Justis, Jacob Klucher, Dylan Lynch, 
-> Caleb Rains, Chris Seals, Kyle Wittman
+> PO Dan Tucker 
+SM Isaac Simmons 
+Dev Anthony Vandergriff 
+Dev Chris Boyle 
+Dev Chris@an Crawford 
+Dev Grant ScuD
+Dev Jean Bilong
+Dev Jerry Galloway 
+Dev Tyson Bailey
+>  
+
 #### CSCI 4350
 #### Fall 2023, East Tennessee State University
 
