@@ -26,8 +26,8 @@ namespace BucStop.Controllers
             return View(_gameService.GetGames());
         }
 
-        //Takes the user to the admin page.
-        public IActionResult Admin()
+        //Takes the user to the contact page.
+        public IActionResult Contact()
         {
             return View();
         }

@@ -15,7 +15,10 @@
 // get a random integer between the range of [min,max]
 // see https://stackoverflow.com/a/1527820/2124254
 
-let score = 0; //Overall score variable
+var score = 0; //Score variable
+
+
+//const gameId = 'tetris';
 function getRandomInt(min, max) {
     min = Math.ceil(min);
     max = Math.floor(max);
@@ -157,7 +160,10 @@ function showGameOver() {
     context.font = '20px monospace';
     context.textAlign = 'center';
     context.textBaseline = 'middle';
-    context.fillText('GAME OVER! Score: ' + score, canvas.width / 2, canvas.height / 2);
+    context.fillText('GAME OVER! Score: ' + score, canvas.width / 2, canvas.height / 2);  
+
+    //Disable use of submitting your scores until the game is over, rather than in the middle of the game.
+    document.getElementById('submitScoreButton').disabled = false;
 }
 
 const canvas = document.getElementById('game');
@@ -337,5 +343,78 @@ document.addEventListener("keydown", (e) => {
     }
 });
 
+
+
+
+
+// Add a function to get the current score
+function getScore() {
+    return score;
+}
+
+// Adds a way to prevent users from submitting multiple times in the same sitting on the same session.
+let scoreSubmitted = false;
+// Add a function to submit the score and initials to the leaderboard
+function submitScore() {
+
+    //Checks to see if the game is over and if the user had already submitted a score for that
+    //session before allowing their data to show on the leaderboard.
+    if (!gameOver || scoreSubmitted) return;
+    const initials = document.getElementById('initials').value.toUpperCase();
+    const score = getScore();
+
+    if (!initials || !score) return;
+
+    const leaderboard = JSON.parse(localStorage.getItem('leaderboard')) || [];
+    leaderboard.push({ initials, score });
+    leaderboard.sort((a, b) => b.score - a.score);
+    // Only take the top 10 scores
+    leaderboard.splice(10);
+    localStorage.setItem('leaderboard', JSON.stringify(leaderboard));
+
+    displayLeaderboard();
+
+    //Disabling of submit button until the game is over.
+    scoreSubmitted = true;
+    document.getElementById('submitScoreButton').disabled = true;
+}
+
+// Add a function to display the leaderboard
+function displayLeaderboard() {
+    const leaderboard = JSON.parse(localStorage.getItem('leaderboard')) || [];
+
+    // Sort the leaderboard by score in descending order
+    leaderboard.sort((a, b) => b.score - a.score);
+
+    // Get the table body
+    const tbody = document.querySelector('#leaderboard tbody');
+
+    // Clear any existing rows
+    tbody.innerHTML = '';
+
+    // Add a rank, initials, and score for each entry in the leaderboard
+    leaderboard.slice(0, 10).forEach((entry, index) => {
+        const row = document.createElement('tr');
+
+        //Each time inserted, add another to row
+        const rankCell = document.createElement('td');
+        rankCell.textContent = index + 1;
+        row.appendChild(rankCell);
+
+        const initialsCell = document.createElement('td');
+        initialsCell.textContent = entry.initials;
+        row.appendChild(initialsCell);
+
+        const scoreCell = document.createElement('td');
+        scoreCell.textContent = entry.score;
+        row.appendChild(scoreCell);
+
+        tbody.appendChild(row);
+
+       
+    });
+}
+
+
 // start the game
-rAF = requestAnimationFrame(loop);
+    rAF = requestAnimationFrame(loop);
