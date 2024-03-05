@@ -1,0 +1,106 @@
+@{
+    ViewData["Title"] = "Contact Page";
+}
+
+<!-- Contact page. Allow users to input name, email, and a message to send.-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f2f2f2;
+        }
+
+        .container {
+            max-width: 800px;
+            margin:  auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        .contact-form {
+            margin-top: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+            .form-group label {
+                display: block;
+                font-weight: bold;
+                margin-bottom: 5px;
+            }
+
+            .form-group input[type="text"],
+            .form-group input[type="email"],
+            .form-group textarea {
+                width: calc(100% - 22px); /* Adjusted width to accommodate the label width */
+                padding: 10px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                box-sizing: border-box;
+            }
+
+            .form-group textarea {
+                width: calc(100% - 22px); /* Adjusted width to accommodate the label width */
+                height: 150px;
+            }
+
+            .form-group input[type="submit"] {
+                background-color: #4CAF50;
+                color: #fff;
+                border: none;
+                padding: 10px 20px;
+                border-radius: 5px;
+                cursor: pointer;
+                font-size: 16px;
+            }
+
+                .form-group input[type="submit"]:hover {
+                    background-color: #45a049;
+                }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Contact Us</h1>
+        <div class="contact-form">
+            <form action="#" method="post">
+                <h2>Name</h2>
+                <div class="form-group">
+                    <label for="name">Name:</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <h2>Email</h2>
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <h2>Your message</h2>
+                <div class="form-group">
+                    <label for="message">Message:</label>
+                    <textarea id="message" name="message" required></textarea>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Send Message">
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
