@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace bucstopapi.Controllers
+namespace BucStop_API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
