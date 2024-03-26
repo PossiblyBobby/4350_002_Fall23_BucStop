@@ -347,7 +347,7 @@ document.addEventListener("keydown", (e) => {
 
 
 
-/* Add a function to get the current score
+// Add a function to get the current score
 function getScore() {
     return score;
 }
@@ -380,6 +380,51 @@ function submitScore() {
 }
 
 // Add a function to display the leaderboard
+function showGameOver() {
+    cancelAnimationFrame(rAF);
+    gameOver = true;
+
+    drawLeaderboard(); // This function will display the leaderboard on the canvas
+
+    context.fillStyle = 'black';
+    context.globalAlpha = 0.75;
+    context.fillRect(0, canvas.height / 2 - 30, canvas.width, 60);
+
+    context.globalAlpha = 1;
+    context.fillStyle = 'white';
+    context.font = '20px monospace';
+    context.textAlign = 'center';
+    context.textBaseline = 'middle';
+    context.fillText('GAME OVER! Score: ' + score, canvas.width / 2, canvas.height / 2);
+}
+// Function to show leaderboard on the screen
+function drawLeaderboard() {
+    const leaderboard = JSON.parse(localStorage.getItem('leaderboard')) || [];
+    leaderboard.sort((a, b) => b.score - a.score);
+
+    const maxDisplay = Math.min(leaderboard.length, 10);
+
+    context.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
+    context.globalAlpha = 0.8; // Slightly transparent background
+    context.fillStyle = 'black';
+    context.fillRect(50, 40, canvas.width - 100, 20 * maxDisplay + 60); // Adjust size as needed
+
+    context.globalAlpha = 1;
+    context.fillStyle = 'white';
+    context.font = '16px monospace';
+    context.textAlign = 'left'; // Align text to the left
+    context.textBaseline = 'top'; // Align text to the top
+
+    if (leaderboard.length === 0) {
+        context.fillText('No scores yet', 60, 60);
+    } else {
+        leaderboard.slice(0, maxDisplay).forEach((entry, index) => {
+            context.fillText(`${index + 1}. ${entry.initials} - ${entry.score}`, 60, 60 + 20 * index);
+        });
+    }
+}
+
+
 function displayLeaderboard() {
     const leaderboard = JSON.parse(localStorage.getItem('leaderboard')) || [];
 
@@ -414,8 +459,24 @@ function displayLeaderboard() {
        
     });
 }
-*/
+
 
 
 // start the game
-    rAF = requestAnimationFrame(loop);
+//rAF = requestAnimationFrame(loop);
+function initGame() {
+    drawLeaderboard();
+    context.fillStyle = 'white';
+    context.font = '20px monospace';
+    context.fillText('Press Start to Play', canvas.width / 2, canvas.height / 2);
+}
+
+document.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' && !rAF) { // Assuming Enter starts the game
+        gameOver = false;
+        rAF = requestAnimationFrame(loop);
+    }
+});
+
+// Initialize the game view
+initGame();
