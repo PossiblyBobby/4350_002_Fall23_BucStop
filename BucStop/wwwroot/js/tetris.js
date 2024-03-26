@@ -347,7 +347,7 @@ document.addEventListener("keydown", (e) => {
 
 
 
-// Add a function to get the current score
+/* Add a function to get the current score
 function getScore() {
     return score;
 }
@@ -414,6 +414,7 @@ function displayLeaderboard() {
        
     });
 }
+*/
 
 
 // start the game
