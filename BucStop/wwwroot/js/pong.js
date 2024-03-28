@@ -57,8 +57,9 @@ function controlAIPaddle() {
 }
 
 
+
 function movePaddle(paddle) {
-    paddle.x = Math.max(grid, Math.min(paddle.x + paddle.dx, canvas.width - paddleWidth - grid));
+    paddle.x = Math.max(grid, Math.min(paddle.x + paddle.dx, canvas.width - paddle.width - grid));
 }
 
 function updateGameObjects() {
@@ -197,6 +198,11 @@ document.addEventListener('keyup', function (e) {
     }
 });
 
+document.addEventListener('touchmove', function (e) {
+    e.preventDefault();
+    let touch = e.touches[0];
+    bottomPaddle.x = touch.clientX - bottomPaddle.width / 2;
+}, false);
 
 let timerId = setInterval(updateTimer, 1000); // Initialize timer
 

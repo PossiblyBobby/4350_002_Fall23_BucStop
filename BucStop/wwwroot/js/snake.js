@@ -20,6 +20,10 @@ let count = 0;
 // Variable to keep track of score
 let score = 0;
 
+//Touch Controls
+let initialTouchX, initialTouchY;
+let touchMoved = false;
+
 //font = '24px Arial';
 //fillText(`Score: ${playerScore}`, 20, 30);
 
@@ -42,6 +46,53 @@ let apple = {
 // Utility function to generate a random integer within a range
 function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
+}
+
+//Touch Function
+function updateSnakeDirection(dx, dy, type = "keyboard") {
+    if (type === "keyboard") {
+        // Prevent the snake from reversing onto itself
+        if (dx === 0) {
+            snake.dx = snake.dx;
+            snake.dy = snake.dy;
+        } else if (dx !== 0) {
+            snake.dx = dx;
+            snake.dy = 0;
+        }
+    } else {
+        // For touch, only update direction when moving in a non-reverse direction
+        if (Math.abs(dx) > Math.abs(snake.dx)) {
+            snake.dx = dx;
+            snake.dy = 0;
+        } else if (Math.abs(dy) > Math.abs(snake.dy)) {
+            snake.dy = dy;
+            snake.dx = 0;
+        }
+    }
+}
+
+function moveSnake() {
+    if (snake.dx !== 0 || snake.dy !== 0) {
+        // Update snake position based on direction, but without reversing
+        const newX = snake.x + snake.dx;
+        const newY = snake.y + snake.dy;
+
+        if (newX !== snake.cells[0].x || newY !== snake.cells[0].y) {
+            snake.x = newX;
+            snake.y = newY;
+        }
+    }
+
+    // Handle wrapping of snake position horizontally and vertically
+    snake.x = wrapPosition(snake.x, canvas.width);
+    snake.y = wrapPosition(snake.y, canvas.height);
+
+    // Add new position to the beginning of the cells array
+    snake.cells.unshift({ x: snake.x, y: snake.y });
+    // Remove cells as snake moves to maintain its length
+    if (snake.cells.length > snake.maxCells) {
+        snake.cells.pop();
+    }
 }
 
 // Main game loop function
@@ -151,7 +202,28 @@ function resetGame() {
     requestAnimationFrame(gameLoop);
   }, 100);
 }
+document.addEventListener("touchstart", (e) => {
+    if (e.changedTouches.length === 1) {
+        initialTouchX = e.changedTouches[0].pageX;
+        initialTouchY = e.changedTouches[0].pageY;
+        touchMoved = false;
+    }
+});
 
+document.addEventListener("touchmove", (e) => {
+    if (e.changedTouches.length === 1) {
+        updateSnakeDirection(e.changedTouches[0].pageX - initialTouchX, e.changedTouches[0].pageY - initialTouchY);
+        initialTouchX = e.changedTouches[0].pageX;
+        initialTouchY = e.changedTouches[0].pageY;
+        touchMoved = true;
+    }
+});
+
+document.addEventListener("touchend", (e) => {
+    if (!touchMoved) {
+        updateSnakeDirection(0, 0, "touch");
+    }
+});
 // Event listener for keyboard input to control snake direction
 document.addEventListener("keydown", (e) => {
   // Prevent the snake from reversing onto itself
