@@ -10,7 +10,7 @@
  */
 
 // Leaderboard logic
-let leaderboard = JSON.parse(localStorage.getItem('leaderboard')) || [];
+let leaderboard = JSON.parse(localStorage.getItem('snakeLeaderboard')) || [];
 let gameStarted = false;
 const maxLeaderboardEntries = 10;
 
@@ -19,9 +19,9 @@ function updateLeaderboard(newScore) {
     leaderboard.push({ score: newScore, initials });
     leaderboard.sort((a, b) => b.score - a.score);
     leaderboard = leaderboard.slice(0, maxLeaderboardEntries);
-    localStorage.setItem('leaderboard', JSON.stringify(leaderboard));
+    localStorage.setItem('snakeLeaderboard', JSON.stringify(leaderboard));
 }
-
+// creates the leaderboard
 function drawLeaderboard() {
     context.clearRect(0, 0, canvas.width, canvas.height);
     context.fillStyle = 'black';
