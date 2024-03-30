@@ -150,21 +150,22 @@ function placeTetromino() {
 function showGameOver() {
     cancelAnimationFrame(rAF);
     gameOver = true;
+    gameStarted = false;
 
     context.fillStyle = 'black';
-    context.globalAlpha = 0.75;
     context.fillRect(0, canvas.height / 2 - 30, canvas.width, 60);
-
-    context.globalAlpha = 1;
     context.fillStyle = 'white';
-    context.font = '20px monospace';
-    context.textAlign = 'center';
-    context.textBaseline = 'middle';
-    context.fillText('GAME OVER! Score: ' + score, canvas.width / 2, canvas.height / 2);  
+    context.fillText(`GAME OVER! Score: ${score}`, canvas.width / 2, canvas.height / 2);
 
-    //Disable use of submitting your scores until the game is over, rather than in the middle of the game.
-    document.getElementById('submitScoreButton').disabled = false;
+    const initials = prompt('Enter your initials (3 characters):');
+    if (initials && initials.length <= 3) {
+        updateLeaderboard(score, initials.toUpperCase());
+    }
+
+    drawLeaderboard();
+    drawStartButton();
 }
+
 
 const canvas = document.getElementById('game');
 const context = canvas.getContext('2d');
@@ -240,8 +241,70 @@ let tetromino = getNextTetromino();
 let rAF = null;  // keep track of the animation frame so we can cancel it
 let gameOver = false;
 
+let leaderboard = JSON.parse(localStorage.getItem('leaderboard')) || [];
+const maxLeaderboardEntries = 10;
+
+function updateLeaderboard(newScore, initials) {
+    leaderboard.push({ score: newScore, initials });
+    leaderboard.sort((a, b) => b.score - a.score);
+    leaderboard = leaderboard.slice(0, maxLeaderboardEntries);
+    localStorage.setItem('leaderboard', JSON.stringify(leaderboard));
+}
+
+function drawLeaderboard() {
+    if (!gameStarted) {
+        context.fillStyle = 'black';
+        context.fillRect(0, 0, canvas.width, canvas.height / 4);
+        context.fillStyle = 'white';
+        context.font = '16px Arial';
+        context.textAlign = 'left';
+        leaderboard.forEach((entry, index) => {
+            context.fillText(`${index + 1}. ${entry.initials} - ${entry.score}`, 10, 20 * (index + 1));
+        });
+    }
+}
+
+function drawStartButton() {
+    context.fillStyle = 'blue';
+    context.fillRect(canvas.width / 2 - 50, canvas.height - 60, 100, 40);
+    context.fillStyle = 'white';
+    context.textAlign = 'center';
+    context.fillText('Start Game', canvas.width / 2, canvas.height - 35);
+}
+
+canvas.addEventListener('click', function (event) {
+    const { x, y } = getMousePos(canvas, event);
+    if (y > canvas.height - 60 && y < canvas.height - 20 &&
+        x > canvas.width / 2 - 50 && x < canvas.width / 2 + 50 && !gameStarted) {
+        startGame();
+    }
+});
+
+function getMousePos(canvas, evt) {
+    const rect = canvas.getBoundingClientRect();
+    return {
+        x: evt.clientX - rect.left,
+        y: evt.clientY - rect.top
+    };
+}
+
+function startGame() {
+    gameStarted = true;
+    gameOver = false;
+    score = 0;
+    tetrominoSequence.length = 0;
+    playfield.forEach(row => row.fill(0));
+    rAF = requestAnimationFrame(loop);
+}
+
+let gameStarted = false;
+drawLeaderboard();
+drawStartButton();
+
 // game loop
 function loop() {
+    if (!gameStarted) return;
+
     rAF = requestAnimationFrame(loop);
     context.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -285,6 +348,10 @@ function loop() {
             }
         }
     }
+}
+
+if (gameOver) {
+    showGameOver();
 }
 
 // listen to keyboard events to move the active tetromino
@@ -342,79 +409,6 @@ document.addEventListener("keydown", (e) => {
         e.preventDefault();
     }
 });
-
-
-
-
-
-/* Add a function to get the current score
-function getScore() {
-    return score;
-}
-
-// Adds a way to prevent users from submitting multiple times in the same sitting on the same session.
-let scoreSubmitted = false;
-// Add a function to submit the score and initials to the leaderboard
-function submitScore() {
-
-    //Checks to see if the game is over and if the user had already submitted a score for that
-    //session before allowing their data to show on the leaderboard.
-    if (!gameOver || scoreSubmitted) return;
-    const initials = document.getElementById('initials').value.toUpperCase();
-    const score = getScore();
-
-    if (!initials || !score) return;
-
-    const leaderboard = JSON.parse(localStorage.getItem('leaderboard')) || [];
-    leaderboard.push({ initials, score });
-    leaderboard.sort((a, b) => b.score - a.score);
-    // Only take the top 10 scores
-    leaderboard.splice(10);
-    localStorage.setItem('leaderboard', JSON.stringify(leaderboard));
-
-    displayLeaderboard();
-
-    //Disabling of submit button until the game is over.
-    scoreSubmitted = true;
-    document.getElementById('submitScoreButton').disabled = true;
-}
-
-// Add a function to display the leaderboard
-function displayLeaderboard() {
-    const leaderboard = JSON.parse(localStorage.getItem('leaderboard')) || [];
-
-    // Sort the leaderboard by score in descending order
-    leaderboard.sort((a, b) => b.score - a.score);
-
-    // Get the table body
-    const tbody = document.querySelector('#leaderboard tbody');
-
-    // Clear any existing rows
-    tbody.innerHTML = '';
-
-    // Add a rank, initials, and score for each entry in the leaderboard
-    leaderboard.slice(0, 10).forEach((entry, index) => {
-        const row = document.createElement('tr');
-
-        //Each time inserted, add another to row
-        const rankCell = document.createElement('td');
-        rankCell.textContent = index + 1;
-        row.appendChild(rankCell);
-
-        const initialsCell = document.createElement('td');
-        initialsCell.textContent = entry.initials;
-        row.appendChild(initialsCell);
-
-        const scoreCell = document.createElement('td');
-        scoreCell.textContent = entry.score;
-        row.appendChild(scoreCell);
-
-        tbody.appendChild(row);
-
-       
-    });
-}
-*/
 
 
 // start the game
