@@ -55,7 +55,7 @@ let totalTime = 30; // Total game time in seconds
 let timerId; // For setting and clearing the interval
 
 // Leaderboard logic
-let leaderboard = JSON.parse(localStorage.getItem('leaderboard')) || [];
+let leaderboard = JSON.parse(localStorage.getItem('pongLeaderboard')) || [];
 const maxLeaderboardEntries = 10;
 
 // Updates the leaderboard with the new score
@@ -64,7 +64,7 @@ function updateLeaderboard(score, initials) {
     leaderboard.push({ score, initials });
     leaderboard.sort((a, b) => b.score - a.score);
     leaderboard = leaderboard.slice(0, maxLeaderboardEntries); // Keep only top entries
-    localStorage.setItem('leaderboard', JSON.stringify(leaderboard));
+    localStorage.setItem('pongLeaderboard', JSON.stringify(leaderboard));
 }
 // Draws the leaderboard on the canvas
 function drawLeaderboard() {

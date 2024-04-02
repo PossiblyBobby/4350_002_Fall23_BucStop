@@ -241,14 +241,14 @@ let tetromino = getNextTetromino();
 let rAF = null;  // keep track of the animation frame so we can cancel it
 let gameOver = false;
 
-let leaderboard = JSON.parse(localStorage.getItem('leaderboard')) || [];
+let leaderboard = JSON.parse(localStorage.getItem('tetrisLeaderboard')) || [];
 const maxLeaderboardEntries = 10;
 
 function updateLeaderboard(newScore, initials) {
     leaderboard.push({ score: newScore, initials });
     leaderboard.sort((a, b) => b.score - a.score);
     leaderboard = leaderboard.slice(0, maxLeaderboardEntries);
-    localStorage.setItem('leaderboard', JSON.stringify(leaderboard));
+    localStorage.setItem('tetrisLeaderboard', JSON.stringify(leaderboard));
 }
 
 function drawLeaderboard() {
