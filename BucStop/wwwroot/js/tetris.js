@@ -146,6 +146,48 @@ function placeTetromino() {
     tetromino = getNextTetromino();
 }
 
+// Function to prompt for player's initials on the canvas
+function promptForInitials() {
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.placeholder = 'Enter your initials';
+    input.style.position = 'absolute';
+    input.style.top = '50%';
+    input.style.left = '50%';
+    input.style.transform = 'translate(-50%, -50%)';
+    input.style.fontSize = '24px';
+    input.style.padding = '10px';
+    input.style.border = '2px solid black';
+
+    const submitButton = document.createElement('button');
+    submitButton.textContent = 'Submit';
+    submitButton.style.fontSize = '24px';
+    submitButton.style.padding = '10px';
+    // Update the style of the submit button to lower its position
+    submitButton.style.marginTop = '90px';
+    const container = document.createElement('div');
+    container.style.position = 'absolute';
+    container.style.top = '0';
+    container.style.left = '0';
+    container.style.width = '100%';
+    container.style.height = '100%';
+    container.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+    container.style.display = 'flex';
+    container.style.justifyContent = 'center';
+    container.style.alignItems = 'center';
+
+    container.appendChild(input);
+    container.appendChild(submitButton);
+    document.body.appendChild(container);
+
+    return new Promise((resolve) => {
+        submitButton.addEventListener('click', () => {
+            const initials = input.value || 'AAA'; // Default to "AAA" if no input
+            document.body.removeChild(container);
+            resolve(initials);
+        });
+    });
+}
 // show the game over screen
 function showGameOver() {
     cancelAnimationFrame(rAF);
@@ -157,15 +199,18 @@ function showGameOver() {
     context.fillStyle = 'white';
     context.fillText(`GAME OVER! Score: ${score}`, canvas.width / 2, canvas.height / 2);
 
-    const initials = prompt('Enter your initials (3 characters):');
-    if (initials && initials.length <= 3) {
-        updateLeaderboard(score, initials.toUpperCase());
-    }
+    setTimeout(() => {
+        drawLeaderboard();
+        setTimeout(async () => {
+            const initials = await promptForInitials();
+            updateLeaderboard(score, initials); 
+            initializeGame(); // Reset the game to its initial state
+            resetGame(); // Reset the game to its initial state
+            setTimeout(drawStartButton, 3000);
+        }, 3000);
 
-    drawLeaderboard();
-    drawStartButton();
+    }, 1000); // Delay before showing the leaderboard
 }
-
 
 const canvas = document.getElementById('game');
 const context = canvas.getContext('2d');
@@ -252,24 +297,66 @@ function updateLeaderboard(newScore, initials) {
 }
 
 function drawLeaderboard() {
-    if (!gameStarted) {
-        context.fillStyle = 'black';
-        context.fillRect(0, 0, canvas.width, canvas.height / 4);
-        context.fillStyle = 'white';
-        context.font = '16px Arial';
-        context.textAlign = 'left';
-        leaderboard.forEach((entry, index) => {
-            context.fillText(`${index + 1}. ${entry.initials} - ${entry.score}`, 10, 20 * (index + 1));
-        });
-    }
+    context.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Use a monospace font for equal character width
+    context.font = '32px Monospace';
+    context.fillStyle = 'white';
+
+    const title = 'Tetris Leaderboard';
+
+    // Center the title at the top of the canvas
+    const titleX = 160; // Fixed X position for the title
+    const titleY = 150; // Fixed Y position for the title
+    context.fillText(title, titleX, titleY);  // Draw title at the top
+
+    // Calculate the start position for the leaderboard entries
+    let startY = titleY + 60; // Start below the title with some margin
+    let maxInitialsWidth = 0;
+    let maxScoreWidth = 0;
+
+    // Calculate maximum width of initials and scores for alignment
+    leaderboard.forEach((entry) => {
+        const initialsWidth = context.measureText(entry.initials.toUpperCase()).width;
+        const scoreWidth = context.measureText(entry.score.toString()).width;
+        if (initialsWidth > maxInitialsWidth) {
+            maxInitialsWidth = initialsWidth;
+        }
+        if (scoreWidth > maxScoreWidth) {
+            maxScoreWidth = scoreWidth;
+        }
+    });
+
+    const startX = (canvas.width - (maxInitialsWidth + maxScoreWidth + 40)) / 2;
+
+    // Display each leaderboard entry in a table-like format
+    leaderboard.forEach((entry, index) => {
+        const initials = entry.initials.toUpperCase();
+        const score = entry.score.toString();
+        const rowY = startY + 32 * (index + 1);
+
+        context.fillText(initials, startX, rowY);
+        context.fillText(score, startX + maxInitialsWidth + 40, rowY);
+    });
 }
 
+
 function drawStartButton() {
+    const buttonWidth = 100;
+    const buttonHeight = 50;
+    const buttonX = canvas.width / 2 - buttonWidth / 2;
+    const buttonY = canvas.height - buttonHeight - 30;
+
     context.fillStyle = 'blue';
-    context.fillRect(canvas.width / 2 - 50, canvas.height - 60, 100, 40);
+    context.fillRect(buttonX, buttonY, buttonWidth, buttonHeight);
+
     context.fillStyle = 'white';
+    context.font = '20px Arial';
     context.textAlign = 'center';
-    context.fillText('Start Game', canvas.width / 2, canvas.height - 35);
+    context.textBaseline = 'middle';
+    context.fillText("Start Game", buttonX + buttonWidth / 2, buttonY + buttonHeight / 2);
+
+    startButton = { x: buttonX, y: buttonY, width: buttonWidth, height: buttonHeight };
 }
 
 canvas.addEventListener('click', function (event) {
@@ -412,4 +499,13 @@ document.addEventListener("keydown", (e) => {
 
 
 // start the game
-    rAF = requestAnimationFrame(loop);
+rAF = requestAnimationFrame(loop);
+
+function initializeGame() {
+    drawLeaderboard();
+    drawStartButton();
+    // Set any other initial game state or UI elements as needed
+}
+
+// Call the initializeGame function when the page loads
+window.onload = initializeGame;
