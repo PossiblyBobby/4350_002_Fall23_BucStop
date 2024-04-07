@@ -16,7 +16,7 @@
 // see https://stackoverflow.com/a/1527820/2124254
 
 function updateLeaderboard(gameName, initials, score) {
-    fetch('https://localhost:7182/bucstopapi/gameinfo/updateleaderboard', {
+    fetch('https://localhost:7078/bucstopapi/gameinfo/updateleaderboard', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -32,10 +32,10 @@ function updateLeaderboard(gameName, initials, score) {
             if (data.success) {
                 console.log('Leaderboard updated successfully.');
             } else {
-                console.error('Failed to update leaderboard:', data.message);
+                console.error('Failed to update leaderboard early in JavaScript:', data.message);
             }
         })
-        .catch((error) => console.error('Error updating leaderboard:', error));
+        .catch((error) => console.error('Error updating leaderboard in JavaScript:', error));
 }
 var score = 0; //Score variable
 

@@ -5,11 +5,12 @@ using BucStop_API.Models;
 using System.Threading.Tasks;
 using bucstopapi; // assuming your GitHubApiClient is within this namespace
 using System;
+using bucstopapi.Models;
 
 namespace BucStop_API.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("bucstopapi/[controller]")]
     public class GameInfoController : ControllerBase
     {
         private readonly GithubAPIFile.GitHubApiClient _gitHubApiClient;
@@ -19,6 +20,7 @@ namespace BucStop_API.Controllers
         private readonly string _repoOwner;
         private readonly string _repoName;
         private readonly string _filePath;
+        private GitHubLeaderboardUpdater leaderboardUpdater;
 
         public GameInfoController(IConfiguration configuration)
         {
@@ -30,6 +32,7 @@ namespace BucStop_API.Controllers
             _repoOwner = configuration["RepoSettings:RepoOwner"];
             _repoName = configuration["RepoSettings:RepoName"];
             _filePath = configuration["RepoSettings:FilePath"];
+            _leaderboardUpdater = new GitHubLeaderboardUpdater(_personalAccessToken);
             _gitHubApiClient = new GithubAPIFile.GitHubApiClient(_personalAccessToken);
         }
 
@@ -68,14 +71,14 @@ namespace BucStop_API.Controllers
             }
         }
 
-        [HttpPost("UpdateLeaderboard")]
-        public async Task<ActionResult> UpdateLeaderboard(string gameName, string initials, int score)
+        [HttpPost("updateleaderboard")]
+        public async Task<ActionResult> UpdateLeaderboard([FromBody] LeaderboardUpdateRequest request)
         {
             try
             {
                 // Assume UpdateGitHubLeaderboardAsync is a method that updates the leaderboard
                 // on GitHub using the provided game name, initials, and score.
-                await _leaderboardUpdater.UpdateGitHubLeaderboardAsync(_repoOwner, _repoName, _filePath, initials, score);
+                await _leaderboardUpdater.UpdateGitHubLeaderboardAsync(_repoOwner, _repoName, _filePath, request.Initials, request.Score);
 
                 // Dummy return to be replaced
                 return Ok(true);
@@ -85,7 +88,7 @@ namespace BucStop_API.Controllers
                 // Log the error and return an error response
                 
                 // Dummy return to be replaced
-                return Ok(true);
+                return StatusCode(500, "An error occurred while updating the leaderboard in GameInfoController.");
             }
         }
     }
