@@ -15,6 +15,28 @@
 // get a random integer between the range of [min,max]
 // see https://stackoverflow.com/a/1527820/2124254
 
+function updateLeaderboard(gameName, initials, score) {
+    fetch('https://localhost:7182/bucstopapi/gameinfo/updateleaderboard', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            gameName: gameName,
+            initials: initials,
+            score: score,
+        }),
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                console.log('Leaderboard updated successfully.');
+            } else {
+                console.error('Failed to update leaderboard:', data.message);
+            }
+        })
+        .catch((error) => console.error('Error updating leaderboard:', error));
+}
 var score = 0; //Score variable
 
 
@@ -364,7 +386,7 @@ function submitScore() {
     const score = getScore();
 
     if (!initials || !score) return;
-
+    updateLeaderboard('tetris', initials, score);
     const leaderboard = JSON.parse(localStorage.getItem('leaderboard')) || [];
     leaderboard.push({ initials, score });
     leaderboard.sort((a, b) => b.score - a.score);
@@ -377,6 +399,7 @@ function submitScore() {
     //Disabling of submit button until the game is over.
     scoreSubmitted = true;
     document.getElementById('submitScoreButton').disabled = true;
+    
 }
 
 // Add a function to display the leaderboard
