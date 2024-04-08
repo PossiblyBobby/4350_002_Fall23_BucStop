@@ -28,7 +28,7 @@ namespace BucStop_API.Controllers
             // THIS IS WHERE THE TOKEN WOULD GO, CONSULT THE DOC!
             _configuration = configuration;
             // Abstract away for security reasons
-            _personalAccessToken = _configuration["GitHubSettings:PersonalAccessToken"];
+            _personalAccessToken = configuration["GITHUB_PAT"];
             _repoOwner = configuration["RepoSettings:RepoOwner"];
             _repoName = configuration["RepoSettings:RepoName"];
             _filePath = configuration["RepoSettings:FilePath"];
