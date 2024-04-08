@@ -24,14 +24,15 @@ namespace BucStop_API.Controllers
 
         public GameInfoController(IConfiguration configuration)
         {
-            // Assuming the Personal Access Token (PAT) is securely stored/retrieved
-            // THIS IS WHERE THE TOKEN WOULD GO, CONSULT THE DOC!
+            // Set the environment
             _configuration = configuration;
             // Abstract away for security reasons
             _personalAccessToken = configuration["GITHUB_PAT"];
             _repoOwner = configuration["RepoSettings:RepoOwner"];
             _repoName = configuration["RepoSettings:RepoName"];
             _filePath = configuration["RepoSettings:FilePath"];
+
+            // Initialize with PAT
             _leaderboardUpdater = new GitHubLeaderboardUpdater(_personalAccessToken);
             _gitHubApiClient = new GithubAPIFile.GitHubApiClient(_personalAccessToken);
         }
@@ -71,6 +72,11 @@ namespace BucStop_API.Controllers
             }
         }
 
+        /// <summary>
+        /// Calls a method to update the game leaderboard on the GitHub repo, given the appropriate information.
+        /// </summary>
+        /// <param name="request">A LeaderboardUpdateRequest object holding gamename, initials, and score.</param>
+        /// <returns>Nothing or failure code, depending on outcome.</returns>
         [HttpPost("updateleaderboard")]
         public async Task<ActionResult> UpdateLeaderboard([FromBody] LeaderboardUpdateRequest request)
         {

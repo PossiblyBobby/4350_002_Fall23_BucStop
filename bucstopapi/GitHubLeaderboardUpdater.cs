@@ -17,6 +17,15 @@ namespace bucstopapi
             };
         }
 
+        /// <summary>
+        /// Retrieves the requested file from the requested repo, append new score to it, and then push back the appended file.
+        /// </summary>
+        /// <param name="repoOwner">Owner of the GitHub repo where file is stored.</param>
+        /// <param name="repoName">The name of the GitHub repo.</param>
+        /// <param name="filePath">The path to the file being appended to.</param>
+        /// <param name="initials">The initials entered by the player of the game.</param>
+        /// <param name="score">The final score of the game in question.</param>
+        /// <returns></returns>
         public async Task UpdateGitHubLeaderboardAsync(string repoOwner, string repoName, string filePath, string initials, int score)
         {
             // Fetch the existing leaderboard file

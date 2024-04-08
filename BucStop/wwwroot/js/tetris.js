@@ -12,9 +12,10 @@
 
 // https://tetris.fandom.com/wiki/Tetris_Guideline
 
-// get a random integer between the range of [min,max]
-// see https://stackoverflow.com/a/1527820/2124254
 
+
+// Function to update leaderboard after game end. Sends out a call to the API with a .json file representing
+// the game, the initials entered, and the score. 
 function updateLeaderboard(gameName, initials, score) {
     fetch('https://localhost:7078/bucstopapi/gameinfo/updateleaderboard', {
         method: 'POST',
@@ -37,8 +38,11 @@ function updateLeaderboard(gameName, initials, score) {
         })
         .catch((error) => console.error('Error updating leaderboard in JavaScript:', error));
 }
+
 var score = 0; //Score variable
 
+// get a random integer between the range of [min,max]
+// see https://stackoverflow.com/a/1527820/2124254
 
 //const gameId = 'tetris';
 function getRandomInt(min, max) {

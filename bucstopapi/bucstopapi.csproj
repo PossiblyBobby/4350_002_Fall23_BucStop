@@ -4,6 +4,8 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+	<!-- enter your own Guid here instead of this one -->
+	<!-- to do so, open a Powershell and type "New-Guid" (without quotes) -->
 	<UserSecretsId>c360514c-5c01-4be9-bd76-46872c441f1c</UserSecretsId>
   </PropertyGroup>
 
