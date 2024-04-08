@@ -1,11 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using BucStop_API.Models;
+using BucStop_API.Services;
 using Microsoft.AspNetCore.Mvc;
 using BucStop_API.Models;
 using System.Threading.Tasks;
 using bucstopapi; // assuming your GitHubApiClient is within this namespace
 using System;
 using bucstopapi.Models;
+using Microsoft.Extensions.Configuration;
+
 
 namespace BucStop_API.Controllers
 {
@@ -22,7 +25,19 @@ namespace BucStop_API.Controllers
         private readonly string _filePath;
         private GitHubLeaderboardUpdater leaderboardUpdater;
 
-        public GameInfoController(IConfiguration configuration)
+        private readonly ILogger<GameInfoController> _logger;
+
+        private readonly HttpClient _httpClient;
+
+        private readonly GameInstructionsService _gameInstructionsService;
+        private readonly Dictionary<string, string> _gameUrls = new Dictionary<string, string>
+        {
+            {"Tetris", "https://raw.githubusercontent.com/ccrawford02/BucStopTetris/main/howtoplaytetris.txt"},
+            {"Snake", "https://raw.githubusercontent.com/ccrawford02/BucStopSnake/main/HowToPlaySnake.txt"},
+            {"Pong", "https://raw.githubusercontent.com/ccrawford02/BucStopPong/main/howtoplaypong.txt"}
+        };
+
+        public GameInfoController(IConfiguration configuration, GameInstructionsService gameInstructionsService, ILogger<GameInfoController> logger)
         {
             // Assuming the Personal Access Token (PAT) is securely stored/retrieved
             // THIS IS WHERE THE TOKEN WOULD GO, CONSULT THE DOC!
@@ -34,7 +49,13 @@ namespace BucStop_API.Controllers
             _filePath = configuration["RepoSettings:FilePath"];
             _leaderboardUpdater = new GitHubLeaderboardUpdater(_personalAccessToken);
             _gitHubApiClient = new GithubAPIFile.GitHubApiClient(_personalAccessToken);
+            _gameInstructionsService = gameInstructionsService;
+            _logger = logger;
+
+
         }
+
+
 
         [HttpGet("{gameName}")]
         public async Task<ActionResult<GameDetails>> GetGameDetails(string gameName, string repoName, string repoOwner)
@@ -86,10 +107,46 @@ namespace BucStop_API.Controllers
             catch (Exception ex)
             {
                 // Log the error and return an error response
-                
+
                 // Dummy return to be replaced
                 return StatusCode(500, "An error occurred while updating the leaderboard in GameInfoController.");
             }
         }
+
+        //Implementing the GetGameInstructions method to fetch the HowToPlay instructions for the game
+
+        /// <summary>
+        /// Retrieves the game instructions for the specified game.
+        /// </summary>
+        /// <param name="gameName">The name of the game.</param>
+        /// <returns>The game instructions.</returns>
+        [HttpGet("Instructions/{gameName}")]
+        public async Task<ActionResult<GameDetails>> GetGameInstructions(string gameName)
+        {
+            // Check if the game instructions URL exists for the specified game
+            if (!_gameUrls.TryGetValue(gameName, out var instructionsUrl))
+            {
+                _logger.LogWarning($"Instructions URL for {gameName} not found.");
+                return NotFound($"Instructions for {gameName} not found.");
+            }
+
+            try
+            {
+                _logger.LogInformation($"Attempting to fetch game instructions for {gameName} from {instructionsUrl}");
+                // Fetch the game instructions content using the GameInstructionsService
+                var instructionsContent = await _gameInstructionsService.GetGameInstructions(gameName, instructionsUrl);
+
+                _logger.LogInformation($"Successfully fetched instructions for {gameName}");
+                return Ok(instructionsContent);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error fetching instructions for {gameName}: {ex.Message}");
+                return StatusCode(500, new { message = $"An error occurred while fetching game instructions for '{gameName}': {ex.Message}" });
+            }
+        }
+
     }
+
 }
+
