@@ -85,9 +85,11 @@ function controlAIPaddle() {
     topPaddle.dx = dx > 0 ? Math.min(topPaddleSpeed, dx) : Math.max(-topPaddleSpeed, dx);
 }
 
+
 function movePaddle(paddle) {
     paddle.x += paddle.dx;
     paddle.x = Math.max(grid, Math.min(canvas.width - paddle.width - grid, paddle.x));
+
 }
 
 function updateScores() {
@@ -430,6 +432,13 @@ canvas.addEventListener('click', function (event) {
         x: event.clientX - rect.left,
         y: event.clientY - rect.top
     };
+
+document.addEventListener('touchmove', function (e) {
+    e.preventDefault();
+    let touch = e.touches[0];
+    bottomPaddle.x = touch.clientX - bottomPaddle.width / 2;
+}, false);
+
 
     if (isInside(clickPosition, startButton)) {
         startGame();
