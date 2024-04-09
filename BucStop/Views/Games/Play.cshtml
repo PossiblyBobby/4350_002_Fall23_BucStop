@@ -1,6 +1,7 @@
 ﻿@model BucStop.Models.Game
 
 <!-- This is the page every game is embeded into with the js files(in wwwroot folder) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
 <style>
     canvas {
         padding-left: 0;
@@ -34,6 +35,8 @@
                         else if (Model.Title == "Pong")
                         {
                             <canvas width="400" height="500" id="game" style="border: 1px solid #000000; background-color: gray"></canvas>
+                            
+
                         }
                         else
                         {
@@ -46,32 +49,7 @@
                 </div>
             </div>
 
-            <!-- Two container objects here to house taking in user initials for score recording. Houses submit button, input box, and
-                 actual leaderboard implementation. Currently implements it for all games with a box to the side which is something
-                 that will either have to be tailored for each game or redone.
-            -->
-
-            <div id="inputBoxContainer" style="text-align: center;">
-                <div id="inputBox" style="display: inline-block; background-color: #f0f0f0; padding: 10px; border-radius: 5px;">
-                    <h2>Submit Your Score</h2>
-                    <input type="text" id="initials" maxlength="3" placeholder="Initials" style="margin-right: 10px;">
-                    <button id="submitScoreButton" onclick="submitScore()" disabled>Submit Score</button>
-                </div>
-
-                <div id="leaderboardContainer" style="margin-top: 20px;">
-                    <h2>Leaderboard</h2>
-                    <table id="leaderboard">
-                        <thead>
-                            <tr>
-                                <th>Rank</th>
-                                <th>Initials</th>
-                                <th>Score</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-            </div>
+            
             <!-- Pills to view a games author, description, and how to play -->
             <ul class="nav nav-tabs" role="tablist">
                 <li class="nav-item" role="presentation">

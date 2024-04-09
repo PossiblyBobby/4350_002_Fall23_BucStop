@@ -168,24 +168,70 @@ function placeTetromino() {
     tetromino = getNextTetromino();
 }
 
+// Function to prompt for player's initials on the canvas
+function promptForInitials() {
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.placeholder = 'Enter your initials';
+    input.style.position = 'absolute';
+    input.style.top = '50%';
+    input.style.left = '50%';
+    input.style.transform = 'translate(-50%, -50%)';
+    input.style.fontSize = '24px';
+    input.style.padding = '10px';
+    input.style.border = '2px solid black';
+
+    const submitButton = document.createElement('button');
+    submitButton.textContent = 'Submit';
+    submitButton.style.fontSize = '24px';
+    submitButton.style.padding = '10px';
+    // Update the style of the submit button to lower its position
+    submitButton.style.marginTop = '90px';
+    const container = document.createElement('div');
+    container.style.position = 'absolute';
+    container.style.top = '0';
+    container.style.left = '0';
+    container.style.width = '100%';
+    container.style.height = '100%';
+    container.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+    container.style.display = 'flex';
+    container.style.justifyContent = 'center';
+    container.style.alignItems = 'center';
+
+    container.appendChild(input);
+    container.appendChild(submitButton);
+    document.body.appendChild(container);
+
+    return new Promise((resolve) => {
+        submitButton.addEventListener('click', () => {
+            const initials = input.value || 'AAA'; // Default to "AAA" if no input
+            document.body.removeChild(container);
+            resolve(initials);
+        });
+    });
+}
 // show the game over screen
 function showGameOver() {
     cancelAnimationFrame(rAF);
     gameOver = true;
+    gameStarted = false;
 
     context.fillStyle = 'black';
-    context.globalAlpha = 0.75;
     context.fillRect(0, canvas.height / 2 - 30, canvas.width, 60);
-
-    context.globalAlpha = 1;
     context.fillStyle = 'white';
-    context.font = '20px monospace';
-    context.textAlign = 'center';
-    context.textBaseline = 'middle';
-    context.fillText('GAME OVER! Score: ' + score, canvas.width / 2, canvas.height / 2);  
+    context.fillText(`GAME OVER! Score: ${score}`, canvas.width / 2, canvas.height / 2);
 
-    //Disable use of submitting your scores until the game is over, rather than in the middle of the game.
-    document.getElementById('submitScoreButton').disabled = false;
+    setTimeout(() => {
+        drawLeaderboard();
+        setTimeout(async () => {
+            const initials = await promptForInitials();
+            updateLeaderboard(score, initials); 
+            initializeGame(); // Reset the game to its initial state
+            resetGame(); // Reset the game to its initial state
+            setTimeout(drawStartButton, 3000);
+        }, 3000);
+
+    }, 1000); // Delay before showing the leaderboard
 }
 
 const canvas = document.getElementById('game');
@@ -262,8 +308,112 @@ let tetromino = getNextTetromino();
 let rAF = null;  // keep track of the animation frame so we can cancel it
 let gameOver = false;
 
+let leaderboard = JSON.parse(localStorage.getItem('tetrisLeaderboard')) || [];
+const maxLeaderboardEntries = 10;
+
+function updateLeaderboard(newScore, initials) {
+    leaderboard.push({ score: newScore, initials });
+    leaderboard.sort((a, b) => b.score - a.score);
+    leaderboard = leaderboard.slice(0, maxLeaderboardEntries);
+    localStorage.setItem('tetrisLeaderboard', JSON.stringify(leaderboard));
+}
+
+function drawLeaderboard() {
+    context.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Use a monospace font for equal character width
+    context.font = '32px Monospace';
+    context.fillStyle = 'white';
+
+    const title = 'Tetris Leaderboard';
+
+    // Center the title at the top of the canvas
+    const titleX = 160; // Fixed X position for the title
+    const titleY = 150; // Fixed Y position for the title
+    context.fillText(title, titleX, titleY);  // Draw title at the top
+
+    // Calculate the start position for the leaderboard entries
+    let startY = titleY + 60; // Start below the title with some margin
+    let maxInitialsWidth = 0;
+    let maxScoreWidth = 0;
+
+    // Calculate maximum width of initials and scores for alignment
+    leaderboard.forEach((entry) => {
+        const initialsWidth = context.measureText(entry.initials.toUpperCase()).width;
+        const scoreWidth = context.measureText(entry.score.toString()).width;
+        if (initialsWidth > maxInitialsWidth) {
+            maxInitialsWidth = initialsWidth;
+        }
+        if (scoreWidth > maxScoreWidth) {
+            maxScoreWidth = scoreWidth;
+        }
+    });
+
+    const startX = (canvas.width - (maxInitialsWidth + maxScoreWidth + 40)) / 2;
+
+    // Display each leaderboard entry in a table-like format
+    leaderboard.forEach((entry, index) => {
+        const initials = entry.initials.toUpperCase();
+        const score = entry.score.toString();
+        const rowY = startY + 32 * (index + 1);
+
+        context.fillText(initials, startX, rowY);
+        context.fillText(score, startX + maxInitialsWidth + 40, rowY);
+    });
+}
+
+
+function drawStartButton() {
+    const buttonWidth = 100;
+    const buttonHeight = 50;
+    const buttonX = canvas.width / 2 - buttonWidth / 2;
+    const buttonY = canvas.height - buttonHeight - 30;
+
+    context.fillStyle = 'blue';
+    context.fillRect(buttonX, buttonY, buttonWidth, buttonHeight);
+
+    context.fillStyle = 'white';
+    context.font = '20px Arial';
+    context.textAlign = 'center';
+    context.textBaseline = 'middle';
+    context.fillText("Start Game", buttonX + buttonWidth / 2, buttonY + buttonHeight / 2);
+
+    startButton = { x: buttonX, y: buttonY, width: buttonWidth, height: buttonHeight };
+}
+
+canvas.addEventListener('click', function (event) {
+    const { x, y } = getMousePos(canvas, event);
+    if (y > canvas.height - 60 && y < canvas.height - 20 &&
+        x > canvas.width / 2 - 50 && x < canvas.width / 2 + 50 && !gameStarted) {
+        startGame();
+    }
+});
+
+function getMousePos(canvas, evt) {
+    const rect = canvas.getBoundingClientRect();
+    return {
+        x: evt.clientX - rect.left,
+        y: evt.clientY - rect.top
+    };
+}
+
+function startGame() {
+    gameStarted = true;
+    gameOver = false;
+    score = 0;
+    tetrominoSequence.length = 0;
+    playfield.forEach(row => row.fill(0));
+    rAF = requestAnimationFrame(loop);
+}
+
+let gameStarted = false;
+drawLeaderboard();
+drawStartButton();
+
 // game loop
 function loop() {
+    if (!gameStarted) return;
+
     rAF = requestAnimationFrame(loop);
     context.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -307,6 +457,10 @@ function loop() {
             }
         }
     }
+}
+
+if (gameOver) {
+    showGameOver();
 }
 
 // listen to keyboard events to move the active tetromino
@@ -366,7 +520,8 @@ document.addEventListener("keydown", (e) => {
 });
 
 
-
+// start the game
+rAF = requestAnimationFrame(loop);
 
 
 // Add a function to get the current score
@@ -436,8 +591,13 @@ function displayLeaderboard() {
 
        
     });
+  
+function initializeGame() {
+    drawLeaderboard();
+    drawStartButton();
+    // Set any other initial game state or UI elements as needed
+
 }
 
-
-// start the game
-    rAF = requestAnimationFrame(loop);
+// Call the initializeGame function when the page loads
+window.onload = initializeGame;
