@@ -589,9 +589,9 @@ function displayLeaderboard() {
 
         tbody.appendChild(row);
 
-       
+
     });
-  
+}
 function initializeGame() {
     drawLeaderboard();
     drawStartButton();
