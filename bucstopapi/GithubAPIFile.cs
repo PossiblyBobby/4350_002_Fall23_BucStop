@@ -9,7 +9,6 @@ namespace bucstopapi
 {
     public class GithubAPIFile
     {
-
         public class GitHubApiClient
         {
             private readonly HttpClient _httpClient;

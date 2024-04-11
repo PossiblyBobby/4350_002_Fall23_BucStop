@@ -20,7 +20,11 @@ namespace BucStop.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Login(string email)
         {
-            if (Regex.IsMatch(email, @"\b[a-z0-9._%+-]+@etsu\.edu\b", RegexOptions.IgnoreCase))
+            if (string.IsNullOrEmpty(email))
+            {
+                return View();
+            }
+            else if (Regex.IsMatch(email, @"\b[a-z0-9._%+-]+@etsu\.edu\b", RegexOptions.IgnoreCase))
             {
                 // If authentication is successful, create a ClaimsPrincipal and sign in the user
                 var claims = new[]
