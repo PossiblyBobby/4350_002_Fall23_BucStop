@@ -51,6 +51,8 @@ BucStop folder.
 		* This folder contains the resources used by the project, 
 			including images, the javascript games, the icons, etc.
 
+### Project Architecture
+[Goal for Project Architecture from Kinser](https://docs.google.com/document/d/1IBXFvhZrVZ5nEolayhD6J-PbU-ONx0ku-wSjetUB8IE/edit?usp=sharing)
 
 ### Help
 For more documentation on how to run locally and how to set up deployments, see the google docs below:
