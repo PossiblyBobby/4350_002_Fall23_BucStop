@@ -46,10 +46,5 @@ namespace BucStop.Models
         public string Thumbnail { get; set; }
 
         public int PlayCount { get; set; }
-
-        /*public async Task OnGet([FromServices] MicroClient microClient)
-        {
-            Info = await microClient.GetGamesAsync  ();
-        } */
     }
 }

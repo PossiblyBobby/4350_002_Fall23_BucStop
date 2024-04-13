@@ -1,6 +1,7 @@
 ﻿using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
+using BucStop.Models;
 using Microsoft.Extensions.Logging;
 
 namespace BucStop

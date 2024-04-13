@@ -1,6 +1,6 @@
 @bucstopapi_HostAddress = http://localhost:5219
 
-GET {{bucstopapi_HostAddress}}/weatherforecast/
+GET {{bucstopapi_HostAddress}}/games
 Accept: application/json
 
 ###
