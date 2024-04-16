@@ -26,7 +26,7 @@ namespace BucStop.Controllers
             _playCountManager = new PlayCountManager(_gameService.GetGames() ?? new List<Game>(), webHostEnvironment);
         }
 
-        //Takes the user to the index page, passing the games list as an argument
+        // Takes the user to the index page, passing the games list as an argument
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public async Task<IActionResult> IndexAsync()
         {
@@ -41,7 +41,7 @@ namespace BucStop.Controllers
             return View(games);
         }
 
-        //Takes the user to the Play page, passing the game object the user wants to play
+        // Takes the user to the Play page, passing the game object the user wants to play
         public async Task<IActionResult> Play(int id)
         {
             List<Game> games = await GetGamesWithInfo();
@@ -83,13 +83,13 @@ namespace BucStop.Controllers
             return games;
         }
 
-        //Takes the user to the deprecated snake page
+        // Takes the user to the deprecated snake page
         public IActionResult Snake()
         {
             return View();
         }
 
-        //Takes the user to the deprecated tetris page
+        // Takes the user to the deprecated tetris page
         public IActionResult Tetris()
         {
             return View();

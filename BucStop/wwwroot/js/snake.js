@@ -7,19 +7,18 @@
  * Improvements and modifications by Jean Bilong and Christian Crawford, Spring 2024, ETSU.
  * Enhancements include modularization, use of ES6 features, improved game loop,
  * and additional game states for a better user experience.
- * User
-The game begins with the leaderboard and start button displayed. When the start button
-is pressed the game should begin. The snake eats food to score points. When the snake 
-collides with itself the game is over and it prompts for player's initials. It updates 
-the leaderboard. It then shows the leaderboard and start button so the player can choose to play again
-    // Function to check for collisions with the apple or with itself
-   
+ * 
+ * The game begins with the leaderboard and start button displayed. When the start button
+ * is pressed the game should begin. The snake eats food to score points. When the snake
+ * collides with itself the game is over and it prompts for player's initials. It updates
+ * the leaderboard. It then shows the leaderboard and start button so the player can choose to play again
+ * 
  */
 
 
 
 
-// calls the leaderboard and initializes the game
+// Calls the leaderboard and initializes the game
 document.addEventListener('DOMContentLoaded', initializeGame);
 // Leaderboard logic
 let leaderboard = JSON.parse(localStorage.getItem('snakeLeaderboard')) || [];
@@ -34,7 +33,7 @@ function updateLeaderboard(newScore) {
     leaderboard = leaderboard.slice(0, maxLeaderboardEntries);
     localStorage.setItem('snakeLeaderboard', JSON.stringify(leaderboard));
 }
-// creates the leaderboard
+// Creates the leaderboard
 function drawLeaderboard() {
     context.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -277,7 +276,7 @@ function drawStartButton() {
     context.fillText('Start Game', canvas.width / 2, buttonY + buttonHeight / 2);
 }
 
-// listener for the start button
+// Listener for the start button
 canvas.addEventListener('click', function (event) {
     const rect = canvas.getBoundingClientRect();
     const x = event.clientX - rect.left;
