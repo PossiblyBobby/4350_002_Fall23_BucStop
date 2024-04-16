@@ -10,7 +10,7 @@
 >  
 
 #### CSCI 4350
-#### Spr4ng 2023, East Tennessee State University
+#### Spring 2024, East Tennessee State University
 
 ### Overview:
 This project is a game website made by and for ETSU students. It
