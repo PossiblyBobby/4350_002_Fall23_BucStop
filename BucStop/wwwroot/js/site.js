@@ -3,7 +3,7 @@
  */
 
 var game = document.getElementById("game");
-if (game != null) { //used so the browser doesn't freak out if not at a game page
+if (game != null) { // Used so the browser doesn't freak out if not at a game page
 
     const canvasSwipe = document.getElementById('game');
 
@@ -32,6 +32,7 @@ if (game != null) { //used so the browser doesn't freak out if not at a game pag
         }
     });
 
+    // Simulate arrow key press event with custom keyCode for UI interactions
     function simulateArrowKeyPress(keyCode) {
         const event = new KeyboardEvent('keydown', {
             key: '',
