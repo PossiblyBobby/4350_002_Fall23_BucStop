@@ -55,7 +55,7 @@ BucStop folder.
 [Goal for Project Architecture from Kinser](https://docs.google.com/document/d/1IBXFvhZrVZ5nEolayhD6J-PbU-ONx0ku-wSjetUB8IE/edit?usp=sharing)
 
 ### Help
-For more documentation on how to run locally and how to set up deployments, see the google docs below:
+For more documentation on how to run locally and how to set up deployments, see the docs below:
 * [Running Locally](https://docs.google.com/document/d/1gfUpjZNfqWyv1ohUW1IaS8fOhXp0hOx6tFQVXBADa8Q/edit?usp=sharing)
 * [How to Deploy](https://docs.google.com/document/d/1i0edcmvZm_j0zQLYiigNliW39FJuJbmhkxOCCb2NbVs/edit?usp=sharing)
 * [Source Control Assistance](https://github.com/etsuDummy/KinserPedia/blob/main/GitHub%20Made%20Simple.pdf)
