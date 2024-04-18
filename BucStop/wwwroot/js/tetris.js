@@ -15,14 +15,14 @@
 // get a random integer between the range of [min,max]
 // see https://stackoverflow.com/a/1527820/2124254
 
-function updateLeaderboard(gameName, initials, score) {
+function updateLeaderboard(score, initials) {
     fetch('https://localhost:7078/bucstopapi/gameinfo/updateleaderboard', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-            gameName: gameName,
+            gameName: "Tetris",
             initials: initials,
             score: score,
         }),
@@ -228,10 +228,10 @@ function showGameOver() {
             updateLeaderboard(score, initials); 
             initializeGame(); // Reset the game to its initial state
             resetGame(); // Reset the game to its initial state
-            setTimeout(drawStartButton, 3000);
-        }, 3000);
+            setTimeout(drawStartButton, 500);
+        }, 500);
 
-    }, 1000); // Delay before showing the leaderboard
+    }, 500); // Delay before showing the leaderboard
 }
 
 const canvas = document.getElementById('game');
@@ -311,12 +311,12 @@ let gameOver = false;
 let leaderboard = JSON.parse(localStorage.getItem('tetrisLeaderboard')) || [];
 const maxLeaderboardEntries = 10;
 
-function updateLeaderboard(newScore, initials) {
-    leaderboard.push({ score: newScore, initials });
-    leaderboard.sort((a, b) => b.score - a.score);
-    leaderboard = leaderboard.slice(0, maxLeaderboardEntries);
-    localStorage.setItem('tetrisLeaderboard', JSON.stringify(leaderboard));
-}
+//function updateLeaderboard(newScore, initials) {
+//    leaderboard.push({ score: newScore, initials });
+//    leaderboard.sort((a, b) => b.score - a.score);
+//    leaderboard = leaderboard.slice(0, maxLeaderboardEntries);
+//    localStorage.setItem('tetrisLeaderboard', JSON.stringify(leaderboard));
+//}
 
 function drawLeaderboard() {
     context.clearRect(0, 0, canvas.width, canvas.height);

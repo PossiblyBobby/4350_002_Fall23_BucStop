@@ -22,7 +22,8 @@ namespace BucStop_API.Controllers
         private readonly string _personalAccessToken;
         private readonly string _repoOwner;
         private readonly string _repoName;
-        private readonly string _filePath;
+
+        private string _gameFilePath;
         private GitHubLeaderboardUpdater leaderboardUpdater;
 
         private readonly ILogger<GameInfoController> _logger;
@@ -37,6 +38,12 @@ namespace BucStop_API.Controllers
             {"Pong", "https://raw.githubusercontent.com/ccrawford02/BucStopPong/main/howtoplaypong.txt"}
         };
 
+        public string GameFilePath
+        {
+            get { return _gameFilePath; }
+            set { _gameFilePath = value; }
+        }
+
         public GameInfoController(IConfiguration configuration, GameInstructionsService gameInstructionsService, ILogger<GameInfoController> logger)
         {
             // Assuming the Personal Access Token (PAT) is securely stored/retrieved
@@ -46,16 +53,11 @@ namespace BucStop_API.Controllers
             _personalAccessToken = _configuration["GitHubSettings:PersonalAccessToken"];
             _repoOwner = configuration["RepoSettings:RepoOwner"];
             _repoName = configuration["RepoSettings:RepoName"];
-            _filePath = configuration["RepoSettings:FilePath"];
             _leaderboardUpdater = new GitHubLeaderboardUpdater(_personalAccessToken);
             _gitHubApiClient = new GithubAPIFile.GitHubApiClient(_personalAccessToken);
             _gameInstructionsService = gameInstructionsService;
             _logger = logger;
-
-
         }
-
-
 
         [HttpGet("{gameName}")]
         public async Task<ActionResult<GameDetails>> GetGameDetails(string gameName, string repoName, string repoOwner)
@@ -97,9 +99,23 @@ namespace BucStop_API.Controllers
         {
             try
             {
+                switch (request.GameName)
+                {
+                    case "Tetris":
+                        GameFilePath = "1";
+                        break;
+                    case "Snake":
+                        GameFilePath = "2";
+                        break;
+                    case "Pong":
+                        GameFilePath = "3";
+                        break;
+                    default:
+                        break;
+                }
                 // Assume UpdateGitHubLeaderboardAsync is a method that updates the leaderboard
                 // on GitHub using the provided game name, initials, and score.
-                await _leaderboardUpdater.UpdateGitHubLeaderboardAsync(_repoOwner, _repoName, _filePath, request.Initials, request.Score);
+                await _leaderboardUpdater.UpdateGitHubLeaderboardAsync(_repoOwner, _repoName, GameFilePath, request.Initials, request.Score);
 
                 // Dummy return to be replaced
                 return Ok(true);

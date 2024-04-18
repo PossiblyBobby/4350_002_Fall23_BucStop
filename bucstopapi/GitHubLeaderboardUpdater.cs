@@ -17,8 +17,9 @@ namespace bucstopapi
             };
         }
 
-        public async Task UpdateGitHubLeaderboardAsync(string repoOwner, string repoName, string filePath, string initials, int score)
+        public async Task UpdateGitHubLeaderboardAsync(string repoOwner, string repoName, string gameFilePath, string initials, int score)
         {
+            string filePath = Path.Combine(gameFilePath, "Leaderboard.txt");
             // Fetch the existing leaderboard file
             var fileContent = await _client.Repository.Content.GetAllContents(repoOwner, repoName, filePath);
             var existingContent = fileContent[0].Content;
