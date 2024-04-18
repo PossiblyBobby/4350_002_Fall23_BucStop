@@ -9,8 +9,7 @@ using Microsoft.Extensions.Logging;
 namespace BucStop.Helpers
 {
     /// <summary>
-    /// A helper class to manage API calls to a game information API gateway.
-    /// This class abstracts the complexities of executing HTTP requests.
+    /// Provides methods to retrieve game information from the API gateway.
     /// </summary>
     public class GameInfoHelper
     {
@@ -22,9 +21,9 @@ namespace BucStop.Helpers
         /// <summary>
         /// Initializes a new instance of the GameInfoHelper class.
         /// </summary>
-        /// <param name="httpClient">HttpClient for making HTTP requests.</param>
-        /// <param name="apiBaseUrl">Base URL for the API gateway.</param>
-        /// <param name="logger">Logger for error and information logging.</param>
+        /// <param name="httpClient">The HttpClient for making HTTP requests.</param>
+        /// <param name="apiBaseUrl">The base URL of the API gateway.</param>
+        /// <param name="logger">The logger for logging messages.</param>
         public GameInfoHelper(HttpClient httpClient, string apiBaseUrl, ILogger<GameInfoHelper> logger)
         {
             _httpClient = httpClient;
@@ -38,10 +37,11 @@ namespace BucStop.Helpers
         }
 
         /// <summary>
-        /// Asynchronously retrieves game details identified by the specified game ID.
+        /// Retrieves the game details for the specified game ID from the API gateway.
         /// </summary>
-        /// <param name="gameId">Unique identifier for the game.</param>
-        /// <returns>A task that represents the asynchronous operation and contains GameInfo upon completion.</returns>
+        /// <param name="gameId">The ID of the game to retrieve details for.</param>
+        /// <returns>The game details if found, or null if not found.</returns>
+        /// <exception cref="Exception">Thrown when an error occurs while retrieving game details.</exception>
         public async Task<GameInfo> GetGameDetailsAsync(int gameId)
         {
             string url = $"{_apiBaseUrl}/game/{gameId}";
@@ -49,41 +49,59 @@ namespace BucStop.Helpers
             try
             {
                 HttpResponseMessage response = await _httpClient.GetAsync(url);
-                response.EnsureSuccessStatusCode();
-                var stream = await response.Content.ReadAsStreamAsync();
-                return await JsonSerializer.DeserializeAsync<GameInfo>(stream, _options);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var stream = await response.Content.ReadAsStreamAsync();
+                    return await JsonSerializer.DeserializeAsync<GameInfo>(stream, _options);
+                }
+                else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+                {
+                    _logger.LogWarning($"Game details not found for ID {gameId}");
+                    return null;
+                }
+                else
+                {
+                    string errorMessage = await response.Content.ReadAsStringAsync();
+                    throw new Exception($"Error retrieving game details for ID {gameId}. Status code: {response.StatusCode}. Message: {errorMessage}");
+                }
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error fetching game details for ID {gameId}: {ex}");
-                return null;
+                _logger.LogError(ex, $"Error occurred while retrieving game details for ID {gameId}");
+                throw new Exception($"An error occurred while retrieving game details for ID {gameId}", ex);
             }
         }
 
         /// <summary>
-        /// Fetches game data asynchronously from the API and returns a list of games.
+        /// Retrieves the list of games from the API gateway.
         /// </summary>
-        /// <returns>A task that represents the asynchronous operation and contains a list of games on completion.</returns>
-        public async Task<List<Game>> GetGamesAsync()
+        /// <returns>The list of games.</returns>
+        /// <exception cref="Exception">Thrown when an error occurs while retrieving the list of games.</exception>
+        public async Task<List<Game>> GetAllGamesInfoAsync()
         {
-            // Assume an endpoint that returns an array of Game objects as JSON
-            HttpResponseMessage response = await _httpClient.GetAsync($"{_apiBaseUrl}/games");
+            string url = $"{_apiBaseUrl}/games";
 
-            // Ensure the response is successful or throw an exception
-            response.EnsureSuccessStatusCode();
-
-            // Read the response content as a string asynchronously
-            string jsonContent = await response.Content.ReadAsStringAsync();
-
-            // Deserialize the JSON content to a List<Game>
-            List<Game> games = JsonSerializer.Deserialize<List<Game>>(jsonContent, new JsonSerializerOptions
+            try
             {
-                PropertyNameCaseInsensitive = true
-            });
+                HttpResponseMessage response = await _httpClient.GetAsync(url);
 
-            // Return the deserialized list of games, or a new empty list if the deserialization returned null
-            return games ?? new List<Game>();
+                if (response.IsSuccessStatusCode)
+                {
+                    var stream = await response.Content.ReadAsStreamAsync();
+                    return await JsonSerializer.DeserializeAsync<List<Game>>(stream, _options) ?? new List<Game>();
+                }
+                else
+                {
+                    string errorMessage = await response.Content.ReadAsStringAsync();
+                    throw new Exception($"Error retrieving games. Status code: {response.StatusCode}. Message: {errorMessage}");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while retrieving games");
+                throw new Exception("An error occurred while retrieving games", ex);
+            }
         }
-
     }
 }
