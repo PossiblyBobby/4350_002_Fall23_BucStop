@@ -17,26 +17,23 @@ namespace bucstopapi
             };
         }
 
+        /// <summary>
+        /// Reaches out to the repo and gets the GameCode.js file, returning as a string.
+        /// </summary>
+        /// <param name="repoOwner">Username of the owner of games repo.</param>
+        /// <param name="repoName">Repo holding the collection of games.</param>
+        /// <param name="gameFilePath">Sent when the game ends</param>
+        /// <param name="gameCodePath">The specific file name of the game code file.</param>
+        /// <returns>Game code file as a string.</returns>
         public async Task<string> RetrieveGameCode(string repoOwner, string repoName, string gameFilePath, string gameCodePath)
         {
             string filePath = Path.Combine(gameFilePath, gameCodePath);
-            // Fetch the existing leaderboard file
+
+            // Fetch the GameCode.js file
             var fileContent = await _client.Repository.Content.GetAllContents(repoOwner, repoName, filePath);
             var existingContent = fileContent[0].Content;
 
-            // Append the new score line
-            //var newScoreLine = $"{initials}: {score}";
-            //var updatedContent = $"{existingContent}\n{newScoreLine}";
-
-            // Create update file request
-            //var updateRequest = new UpdateFileRequest("Update leaderboard", updatedContent, fileContent[0].Sha)
-            //{
-            //    // Abstract this out for any committer
-            //    Committer = new Committer("Chris B", "boylec1@etsu.edu", DateTimeOffset.Now)
-            //};
-
-            // Push the updated file back to the GitHub repository
-            //await _client.Repository.Content.UpdateFile(repoOwner, repoName, filePath, updateRequest);
+            // Return game code file as string
             return existingContent;
         }
     }

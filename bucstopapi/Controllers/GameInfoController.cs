@@ -48,14 +48,18 @@ namespace BucStop_API.Controllers
 
         public GameInfoController(IConfiguration configuration, GameInstructionsService gameInstructionsService, ILogger<GameInfoController> logger)
         {
-            // Assuming the Personal Access Token (PAT) is securely stored/retrieved
-            // THIS IS WHERE THE TOKEN WOULD GO, CONSULT THE DOC!
+            // Allow configuration abstractions to be used
             _configuration = configuration;
-            // Abstract away for security reasons
+
+            // Abstract away for security reasons, see API Security documentation for instructions on how to set this
             _personalAccessToken = _configuration["GitHubSettings:PersonalAccessToken"];
+
+            // Variables set in appsettings.json
             _repoOwner = configuration["RepoSettings:RepoOwner"];
             _repoName = configuration["RepoSettings:RepoName"];
             _gameCodePath = configuration["RepoSettings:GameCodeFilePath"];
+
+            // API file objects initialized with the personal access token, allows GitHub communication
             _leaderboardUpdater = new GitHubLeaderboardUpdater(_personalAccessToken);
             _gameCodeRetrieve = new GitHubGameCodeRetrieve(_personalAccessToken);
             _gitHubApiClient = new GithubAPIFile.GitHubApiClient(_personalAccessToken);
@@ -174,6 +178,7 @@ namespace BucStop_API.Controllers
         [HttpGet("GameCode/{gameName}")]
         public async Task<string> GetGameCode(string gameName)
         {         
+            // Filter proper game folder in the repo based on game name.
             switch (gameName)
             {
                 case "Tetris":
@@ -191,12 +196,14 @@ namespace BucStop_API.Controllers
 
             try
             {
+                // Get and return game code as a string
                 string rawGameCode = await _gameCodeRetrieve.RetrieveGameCode(_repoOwner, _repoName, GameFilePath, _gameCodePath);
 
                 return rawGameCode;
             }
             catch (Exception ex)
             {
+                // Placeholder error code
                 return "Status Code 500, An error occurred while retrieving game code in GameInfoController.";
             }
         }
