@@ -166,8 +166,13 @@ namespace BucStop_API.Controllers
             }
         }
 
+        /// <summary>
+        /// Retrieves game code files from the games repo.
+        /// </summary>
+        /// <param name="gameName">Name of the game being requested.</param>
+        /// <returns></returns>
         [HttpGet("GameCode/{gameName}")]
-        public async Task<ActionResult<GameDetails>> GetGameCode(string gameName)
+        public async Task<string> GetGameCode(string gameName)
         {         
             switch (gameName)
             {
@@ -186,36 +191,14 @@ namespace BucStop_API.Controllers
 
             try
             {
-                await _gameCodeRetrieve.RetrieveGameCode(_repoOwner, _repoName, GameFilePath, _gameCodePath);
+                string rawGameCode = await _gameCodeRetrieve.RetrieveGameCode(_repoOwner, _repoName, GameFilePath, _gameCodePath);
 
-                return Ok(gameName);
+                return rawGameCode;
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "An error occurred while retrieving game code in GameInfoController.");
+                return "Status Code 500, An error occurred while retrieving game code in GameInfoController.";
             }
-            //await _leaderboardUpdater.UpdateGitHubLeaderboardAsync(_repoOwner, _repoName, GameFilePath, request.Initials, request.Score);
-            //// Check if the game instructions URL exists for the specified game
-            //if (!_gameUrls.TryGetValue(gameName, out var instructionsUrl))
-            //{
-            //    _logger.LogWarning($"Instructions URL for {gameName} not found.");
-            //    return NotFound($"Instructions for {gameName} not found.");
-            //}
-
-            //try
-            //{
-            //    _logger.LogInformation($"Attempting to fetch game instructions for {gameName} from {instructionsUrl}");
-            //    // Fetch the game instructions content using the GameInstructionsService
-            //    var instructionsContent = await _gameInstructionsService.GetGameInstructions(gameName, instructionsUrl);
-
-            //    _logger.LogInformation($"Successfully fetched instructions for {gameName}");
-            //    return Ok(instructionsContent);
-            //}
-            //catch (Exception ex)
-            //{
-            //    _logger.LogError($"Error fetching instructions for {gameName}: {ex.Message}");
-            //    return StatusCode(500, new { message = $"An error occurred while fetching game instructions for '{gameName}': {ex.Message}" });
-            //}
         }
 
     }
