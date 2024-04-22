@@ -8,6 +8,7 @@ using bucstopapi; // assuming your GitHubApiClient is within this namespace
 using System;
 using bucstopapi.Models;
 using Microsoft.Extensions.Configuration;
+using Octokit.Internal;
 
 
 namespace BucStop_API.Controllers
@@ -18,13 +19,14 @@ namespace BucStop_API.Controllers
     {
         private readonly GithubAPIFile.GitHubApiClient _gitHubApiClient;
         private static GitHubLeaderboardUpdater _leaderboardUpdater;
+        private static GitHubGameCodeRetrieve _gameCodeRetrieve;
         private readonly IConfiguration _configuration;
         private readonly string _personalAccessToken;
         private readonly string _repoOwner;
         private readonly string _repoName;
+        private readonly string _gameCodePath;
 
         private string _gameFilePath;
-        private GitHubLeaderboardUpdater leaderboardUpdater;
 
         private readonly ILogger<GameInfoController> _logger;
 
@@ -53,7 +55,9 @@ namespace BucStop_API.Controllers
             _personalAccessToken = _configuration["GitHubSettings:PersonalAccessToken"];
             _repoOwner = configuration["RepoSettings:RepoOwner"];
             _repoName = configuration["RepoSettings:RepoName"];
+            _gameCodePath = configuration["RepoSettings:GameCodeFilePath"];
             _leaderboardUpdater = new GitHubLeaderboardUpdater(_personalAccessToken);
+            _gameCodeRetrieve = new GitHubGameCodeRetrieve(_personalAccessToken);
             _gitHubApiClient = new GithubAPIFile.GitHubApiClient(_personalAccessToken);
             _gameInstructionsService = gameInstructionsService;
             _logger = logger;
@@ -160,6 +164,58 @@ namespace BucStop_API.Controllers
                 _logger.LogError($"Error fetching instructions for {gameName}: {ex.Message}");
                 return StatusCode(500, new { message = $"An error occurred while fetching game instructions for '{gameName}': {ex.Message}" });
             }
+        }
+
+        [HttpGet("GameCode/{gameName}")]
+        public async Task<ActionResult<GameDetails>> GetGameCode(string gameName)
+        {         
+            switch (gameName)
+            {
+                case "Tetris":
+                    GameFilePath = "1";
+                    break;
+                case "Snake":
+                    GameFilePath = "2";
+                    break;
+                case "Pong":
+                    GameFilePath = "3";
+                    break;
+                default:
+                    break;
+            }
+
+            try
+            {
+                await _gameCodeRetrieve.RetrieveGameCode(_repoOwner, _repoName, GameFilePath, _gameCodePath);
+
+                return Ok(gameName);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An error occurred while retrieving game code in GameInfoController.");
+            }
+            //await _leaderboardUpdater.UpdateGitHubLeaderboardAsync(_repoOwner, _repoName, GameFilePath, request.Initials, request.Score);
+            //// Check if the game instructions URL exists for the specified game
+            //if (!_gameUrls.TryGetValue(gameName, out var instructionsUrl))
+            //{
+            //    _logger.LogWarning($"Instructions URL for {gameName} not found.");
+            //    return NotFound($"Instructions for {gameName} not found.");
+            //}
+
+            //try
+            //{
+            //    _logger.LogInformation($"Attempting to fetch game instructions for {gameName} from {instructionsUrl}");
+            //    // Fetch the game instructions content using the GameInstructionsService
+            //    var instructionsContent = await _gameInstructionsService.GetGameInstructions(gameName, instructionsUrl);
+
+            //    _logger.LogInformation($"Successfully fetched instructions for {gameName}");
+            //    return Ok(instructionsContent);
+            //}
+            //catch (Exception ex)
+            //{
+            //    _logger.LogError($"Error fetching instructions for {gameName}: {ex.Message}");
+            //    return StatusCode(500, new { message = $"An error occurred while fetching game instructions for '{gameName}': {ex.Message}" });
+            //}
         }
 
     }
