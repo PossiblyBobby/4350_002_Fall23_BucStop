@@ -225,7 +225,8 @@ function showGameOver() {
         drawLeaderboard();
         setTimeout(async () => {
             const initials = await promptForInitials();
-            updateLeaderboard(score, initials); 
+            updateLeaderboard(score, initials);
+            updateLeaderboardRepo(socre, initials);
             initializeGame(); // Reset the game to its initial state
             resetGame(); // Reset the game to its initial state
             setTimeout(drawStartButton, 500);
@@ -311,12 +312,12 @@ let gameOver = false;
 let leaderboard = JSON.parse(localStorage.getItem('tetrisLeaderboard')) || [];
 const maxLeaderboardEntries = 10;
 
-//function updateLeaderboard(newScore, initials) {
-//    leaderboard.push({ score: newScore, initials });
-//    leaderboard.sort((a, b) => b.score - a.score);
-//    leaderboard = leaderboard.slice(0, maxLeaderboardEntries);
-//    localStorage.setItem('tetrisLeaderboard', JSON.stringify(leaderboard));
-//}
+function updateLeaderboard(newScore, initials) {
+    leaderboard.push({ score: newScore, initials });
+    leaderboard.sort((a, b) => b.score - a.score);
+    leaderboard = leaderboard.slice(0, maxLeaderboardEntries);
+    localStorage.setItem('tetrisLeaderboard', JSON.stringify(leaderboard));
+}
 
 function drawLeaderboard() {
     context.clearRect(0, 0, canvas.width, canvas.height);
