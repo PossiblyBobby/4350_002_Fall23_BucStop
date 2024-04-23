@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations;
  * about the games. Used in GamesController.cs, which has actual instances
  * of each game.
  */
-
+//test comment Dan Tucker
 namespace BucStop.Models
 {
     public class Game
