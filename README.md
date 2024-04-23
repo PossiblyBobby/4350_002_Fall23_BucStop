@@ -23,6 +23,21 @@ This project also communicates to a microservice with HTTP calls for the game in
 ### Minimum Viable Product(MVP):
 [MVP Doc link](https://docs.google.com/document/d/1Dqdo4Uw-TbotZB-qz9TD10u000-2M7HP1iOVBlIGznc/edit)
 
+### Discord That We Used: 
+[Discord Link](https://discord.gg/PY2gBgAKA9)
+This is the Discord we used to work on the project. You can find conversations we had and
+details you may need in order to work on the project this semester. Feel free to reach out to
+us if you have any questions or need anything from us.
+
+### Trello Board:
+[Trello Link](https://trello.com/b/wSL8hHWm/about-the-same-as-bobby)
+Trello board used to maintain the product backlog, sprint backlog, tasks, tasks completed,
+and tasks completed in older sprints. You all can build on this to keep the project moving
+forward. It will also provide you with some insight on what was previously completed and
+how the process works.
+Whenever you all join, you must contact an admin in order to change ownership of the
+board. Just ping us on Discord and we will do that for you.
+
 ### Project Structure: 
 To understand the project structure, familiarize yourself with the
 MVC (Model View Controller) structure. When clicking on a game, 
