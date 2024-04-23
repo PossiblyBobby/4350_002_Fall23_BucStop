@@ -76,3 +76,4 @@ For more documentation on how to run locally and how to set up deployments, see 
 * [How to Deploy](https://docs.google.com/document/d/1i0edcmvZm_j0zQLYiigNliW39FJuJbmhkxOCCb2NbVs/edit?usp=sharing)
 * [Source Control Assistance](https://github.com/etsuDummy/KinserPedia/blob/main/GitHub%20Made%20Simple.pdf)
 * [API Documentation](https://docs.google.com/document/d/1ZZ2wTub31NNqngSxBfGFOeK515jikKWqSBRc5ueS1bU/edit)
+* [Leaderboard assistance](https://youtu.be/8h75ttRyD-4)
