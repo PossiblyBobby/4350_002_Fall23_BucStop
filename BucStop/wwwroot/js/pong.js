@@ -31,6 +31,29 @@ let gameActive = false;
 let totalTime = 30;
 let timerId;
 
+function updateLeaderboardRepo(score, initials) {
+    fetch('https://localhost:7078/bucstopapi/gameinfo/updateleaderboard', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            gameName: "Pong",
+            initials: initials,
+            score: score,
+        }),
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                console.log('Leaderboard updated successfully.');
+            } else {
+                console.error('Failed to update leaderboard early in JavaScript:', data.message);
+            }
+        })
+        .catch((error) => console.error('Error updating leaderboard in JavaScript:', error));
+}
+
 // Leaderboard logic
 let leaderboard = JSON.parse(localStorage.getItem('pongLeaderboard')) || [];
 const maxLeaderboardEntries = 10;
@@ -157,7 +180,7 @@ function displayScores() {
     context.fillText(`Computer: ${computerScore}`, canvas.width - 20, 30);  // Display computer score on the right
 }
 
-//Displays final score at end of game
+// Displays final score at end of game
 function displayFinalScore() {
     context.clearRect(0, 0, canvas.width, canvas.height);
     context.font = '36px Arial';
@@ -295,7 +318,7 @@ function drawLeaderboard() {
 
 
 
-//function to end the game
+// Function to end the game
 function endGame() {
     clearInterval(timerId);
     gameActive = false;
@@ -306,6 +329,7 @@ function endGame() {
         setTimeout(async () => {
             const initials = await promptForInitials();
             updateLeaderboard(playerScore, initials);
+            updateLeaderboardRepo(playerScore, initials);
             drawLeaderboard();
             setTimeout(drawStartButton, 3000);  // Show start button after a delay
         }, 3000);  // Time to read the score before prompting
