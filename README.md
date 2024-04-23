@@ -18,7 +18,7 @@ is a place to put games created by ETSU students.
 This project also communicates to a microservice with HTTP calls for the game information, the repository is hosted at [Micro Service](https://github.com/chrisseals98/GameInfoMicroService). It is deployed with the microservice using docker compose, see the scripts folder for the docker-compose.yml file.
 
 ### Backlog Information:
-[Backlog](https://docs.google.com/document/d/1qtNMQAEP9aWnK6pfo39iGT0Dhm9uwL6oDHdy6B-Vy-4/edit#heading=h.mgz5ua27kudv)
+[Backlog](https://docs.google.com/document/d/1R9BcMio3UEcsW12iHYqRMY6N7B0hxiBK3DDSbcMKfIk/edit)
 
 ### Minimum Viable Product(MVP):
 [MVP Doc link](https://docs.google.com/document/d/1Dqdo4Uw-TbotZB-qz9TD10u000-2M7HP1iOVBlIGznc/edit)
