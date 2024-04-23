@@ -15,7 +15,7 @@
 ### Overview:
 This project is a game website made by and for ETSU students. It
 is a place to put games created by ETSU students.
-This project also communicates to a microservice with HTTP calls for the game information, the repository is hosted at [Micro Service](https://github.com/chrisseals98/GameInfoMicroService). It is deployed with the microservice using docker compose, see the scripts folder for the docker-compose.yml file.
+This project also communicates to a microservice with HTTP calls for the game information, the repository is hosted at [Micro Service](https://github.com/chrisseals98/GameInfoMicroService). It is deployed with the microservice using docker compose, see the scripts folder for the docker-compose.yml file. This microservice was in the process of being phased out with our API. We made a separate repository for the games: [Game Repo](https://github.com/ccrawford02/BucStopGames). This is where our API pulls the files from, if you fork this game repo, you may have to adjust the code to reference your new repo. This was in progress so a call to the API still needs to be implemented on the BucStop side to grab the files and run them.
 
 ### Backlog Information:
 [Backlog](https://docs.google.com/document/d/1R9BcMio3UEcsW12iHYqRMY6N7B0hxiBK3DDSbcMKfIk/edit)
