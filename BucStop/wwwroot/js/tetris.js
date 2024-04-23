@@ -8,13 +8,18 @@
  * 
  * Fall 2023, ETSU
  * 
+ * https://tetris.fandom.com/wiki/Tetris_Guideline
+ * 
+ * Get a random integer between the range of [min,max]
+ * See https://stackoverflow.com/a/1527820/2124254
+ * 
  */
+
 
 // https://tetris.fandom.com/wiki/Tetris_Guideline
 
-// get a random integer between the range of [min,max]
 // see https://stackoverflow.com/a/1527820/2124254
-
+// Update leaderboard with player initials and score via fetch POST request to server
 function updateLeaderboard(score, initials) {
     fetch('https://localhost:7078/bucstopapi/gameinfo/updateleaderboard', {
         method: 'POST',
@@ -37,7 +42,7 @@ function updateLeaderboard(score, initials) {
         })
         .catch((error) => console.error('Error updating leaderboard in JavaScript:', error));
 }
-var score = 0; //Score variable
+var score = 0; // Score variable
 
 
 //const gameId = 'tetris';
@@ -48,8 +53,8 @@ function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-// generate a new tetromino sequence
-// see https://tetris.fandom.com/wiki/Random_Generator
+// Generate a new tetromino sequence
+// See https://tetris.fandom.com/wiki/Random_Generator
 function generateSequence() {
     const sequence = ['I', 'J', 'L', 'O', 'S', 'T', 'Z'];
 
@@ -60,7 +65,7 @@ function generateSequence() {
     }
 }
 
-// get the next tetromino in the sequence
+// Get the next tetromino in the sequence
 function getNextTetromino() {
     if (tetrominoSequence.length === 0) {
         generateSequence();
@@ -76,15 +81,15 @@ function getNextTetromino() {
     const row = name === 'I' ? -1 : -2;
 
     return {
-        name: name,      // name of the piece (L, O, etc.)
-        matrix: matrix,  // the current rotation matrix
-        row: row,        // current row (starts offscreen)
-        col: col         // current col
+        name: name,      // Name of the piece (L, O, etc.)
+        matrix: matrix,  // The current rotation matrix
+        row: row,        // Current row (starts offscreen)
+        col: col         // Current col
     };
 }
 
-// rotate an NxN matrix 90deg
-// see https://codereview.stackexchange.com/a/186834
+// Rotate an NxN matrix 90deg
+// See https://codereview.stackexchange.com/a/186834
 function rotate(matrix) {
     const N = matrix.length - 1;
     const result = matrix.map((row, i) =>
@@ -94,16 +99,16 @@ function rotate(matrix) {
     return result;
 }
 
-// check to see if the new matrix/row/col is valid
+// Check to see if the new matrix/row/col is valid
 function isValidMove(matrix, cellRow, cellCol) {
     for (let row = 0; row < matrix.length; row++) {
         for (let col = 0; col < matrix[row].length; col++) {
             if (matrix[row][col] && (
-                // outside the game bounds
+                // Outside the game bounds
                 cellCol + col < 0 ||
                 cellCol + col >= playfield[0].length ||
                 cellRow + row >= playfield.length ||
-                // collides with another piece
+                // Collides with another piece
                 playfield[cellRow + row][cellCol + col])
             ) {
                 return false;
@@ -114,7 +119,7 @@ function isValidMove(matrix, cellRow, cellCol) {
     return true;
 }
 
-// place the tetromino on the playfield
+// Place the tetromino on the playfield
 function placeTetromino() {
     for (let row = 0; row < tetromino.matrix.length; row++) {
         for (let col = 0; col < tetromino.matrix[row].length; col++) {
@@ -130,7 +135,7 @@ function placeTetromino() {
         }
     }
 
-    lineCount = 0; //Counts the number of lines cleared for the current tetronimo
+    lineCount = 0; // Counts the number of lines cleared for the current tetronimo
 
     // check for line clears starting from the bottom and working our way up
     for (let row = playfield.length - 1; row >= 0;) {
@@ -149,7 +154,7 @@ function placeTetromino() {
         }
     }
 
-    //Increases the score based on the number of lines cleared
+    // Increases the score based on the number of lines cleared
     switch (lineCount) {
         case 1:
             score = score + 40;
@@ -535,8 +540,8 @@ let scoreSubmitted = false;
 // Add a function to submit the score and initials to the leaderboard
 function submitScore() {
 
-    //Checks to see if the game is over and if the user had already submitted a score for that
-    //session before allowing their data to show on the leaderboard.
+    // Checks to see if the game is over and if the user had already submitted a score for that
+    // session before allowing their data to show on the leaderboard.
     if (!gameOver || scoreSubmitted) return;
     const initials = document.getElementById('initials').value.toUpperCase();
     const score = getScore();
@@ -552,7 +557,7 @@ function submitScore() {
 
     displayLeaderboard();
 
-    //Disabling of submit button until the game is over.
+    // Disabling of submit button until the game is over.
     scoreSubmitted = true;
     document.getElementById('submitScoreButton').disabled = true;
     
@@ -575,7 +580,7 @@ function displayLeaderboard() {
     leaderboard.slice(0, 10).forEach((entry, index) => {
         const row = document.createElement('tr');
 
-        //Each time inserted, add another to row
+        // Each time inserted, add another to row
         const rankCell = document.createElement('td');
         rankCell.textContent = index + 1;
         row.appendChild(rankCell);

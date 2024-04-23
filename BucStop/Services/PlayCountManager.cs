@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 
 namespace BucStop.Services
 {
-
     public class PlayCountManager
     {
         private List<Game> games;
@@ -18,7 +17,7 @@ namespace BucStop.Services
             LoadPlayCounts();
         }
 
-
+        // Increments and saves play counts for games
         public void IncrementPlayCount(int gameId)
         {
             var game = games.FirstOrDefault(g => g.Id == gameId);
@@ -29,12 +28,14 @@ namespace BucStop.Services
             }
         }
 
+        // Retreive the play count from specific game
         public int GetPlayCount(int gameId)
         {
             var game = games.FirstOrDefault(g => g.Id == gameId);
             return game?.PlayCount ?? 0;
         }
 
+        // Loads up the play counts
         private void LoadPlayCounts()
         {
             if (File.Exists(jsonFilePath))
@@ -62,6 +63,7 @@ namespace BucStop.Services
             }
         }
 
+        // Saves play counts to file
         private void SavePlayCounts()
         {
             var jsonText = JsonSerializer.Serialize(games);

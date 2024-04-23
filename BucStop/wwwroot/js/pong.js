@@ -180,7 +180,7 @@ function displayScores() {
     context.fillText(`Computer: ${computerScore}`, canvas.width - 20, 30);  // Display computer score on the right
 }
 
-//Displays final score at end of game
+// Displays final score at end of game
 function displayFinalScore() {
     context.clearRect(0, 0, canvas.width, canvas.height);
     context.font = '36px Arial';
@@ -318,7 +318,7 @@ function drawLeaderboard() {
 
 
 
-//function to end the game
+// Function to end the game
 function endGame() {
     clearInterval(timerId);
     gameActive = false;

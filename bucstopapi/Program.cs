@@ -12,6 +12,8 @@ builder.Services.AddSwaggerGen();
 // Register the GameInstructionsService
 builder.Services.AddHttpClient<GameInstructionsService>();
 
+builder.Services.AddHttpClient<GameFileService>();
+
 // Add services to the container.
 builder.Services.AddCors(options =>
 {
