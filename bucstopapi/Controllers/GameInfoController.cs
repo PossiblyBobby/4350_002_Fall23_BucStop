@@ -8,6 +8,7 @@ using bucstopapi; // assuming your GitHubApiClient is within this namespace
 using System;
 using bucstopapi.Models;
 using Microsoft.Extensions.Configuration;
+using Octokit.Internal;
 
 
 namespace BucStop_API.Controllers
@@ -18,12 +19,14 @@ namespace BucStop_API.Controllers
     {
         private readonly GithubAPIFile.GitHubApiClient _gitHubApiClient;
         private static GitHubLeaderboardUpdater _leaderboardUpdater;
+        private static GitHubGameCodeRetrieve _gameCodeRetrieve;
         private readonly IConfiguration _configuration;
         private readonly string _personalAccessToken;
         private readonly string _repoOwner;
         private readonly string _repoName;
-        private readonly string _filePath;
-        private GitHubLeaderboardUpdater leaderboardUpdater;
+        private readonly string _gameCodePath;
+
+        private string _gameFilePath;
 
         private readonly ILogger<GameInfoController> _logger;
 
@@ -37,25 +40,32 @@ namespace BucStop_API.Controllers
             {"Pong", "https://raw.githubusercontent.com/ccrawford02/BucStopPong/main/howtoplaypong.txt"}
         };
 
+        public string GameFilePath
+        {
+            get { return _gameFilePath; }
+            set { _gameFilePath = value; }
+        }
+
         public GameInfoController(IConfiguration configuration, GameInstructionsService gameInstructionsService, ILogger<GameInfoController> logger)
         {
-            // Assuming the Personal Access Token (PAT) is securely stored/retrieved
-            // THIS IS WHERE THE TOKEN WOULD GO, CONSULT THE DOC!
+            // Allow configuration abstractions to be used
             _configuration = configuration;
-            // Abstract away for security reasons
+
+            // Abstract away for security reasons, see API Security documentation for instructions on how to set this
             _personalAccessToken = _configuration["GitHubSettings:PersonalAccessToken"];
+
+            // Variables set in appsettings.json
             _repoOwner = configuration["RepoSettings:RepoOwner"];
             _repoName = configuration["RepoSettings:RepoName"];
-            _filePath = configuration["RepoSettings:FilePath"];
+            _gameCodePath = configuration["RepoSettings:GameCodeFilePath"];
+
+            // API file objects initialized with the personal access token, allows GitHub communication
             _leaderboardUpdater = new GitHubLeaderboardUpdater(_personalAccessToken);
+            _gameCodeRetrieve = new GitHubGameCodeRetrieve(_personalAccessToken);
             _gitHubApiClient = new GithubAPIFile.GitHubApiClient(_personalAccessToken);
             _gameInstructionsService = gameInstructionsService;
             _logger = logger;
-
-
         }
-
-
 
         [HttpGet("{gameName}")]
         public async Task<ActionResult<GameDetails>> GetGameDetails(string gameName, string repoName, string repoOwner)
@@ -97,9 +107,23 @@ namespace BucStop_API.Controllers
         {
             try
             {
+                switch (request.GameName)
+                {
+                    case "Tetris":
+                        GameFilePath = "1";
+                        break;
+                    case "Snake":
+                        GameFilePath = "2";
+                        break;
+                    case "Pong":
+                        GameFilePath = "3";
+                        break;
+                    default:
+                        break;
+                }
                 // Assume UpdateGitHubLeaderboardAsync is a method that updates the leaderboard
                 // on GitHub using the provided game name, initials, and score.
-                await _leaderboardUpdater.UpdateGitHubLeaderboardAsync(_repoOwner, _repoName, _filePath, request.Initials, request.Score);
+                await _leaderboardUpdater.UpdateGitHubLeaderboardAsync(_repoOwner, _repoName, GameFilePath, request.Initials, request.Score);
 
                 // Dummy return to be replaced
                 return Ok(true);
@@ -143,6 +167,44 @@ namespace BucStop_API.Controllers
             {
                 _logger.LogError($"Error fetching instructions for {gameName}: {ex.Message}");
                 return StatusCode(500, new { message = $"An error occurred while fetching game instructions for '{gameName}': {ex.Message}" });
+            }
+        }
+
+        /// <summary>
+        /// Retrieves game code files from the games repo.
+        /// </summary>
+        /// <param name="gameName">Name of the game being requested.</param>
+        /// <returns></returns>
+        [HttpGet("GameCode/{gameName}")]
+        public async Task<string> GetGameCode(string gameName)
+        {         
+            // Filter proper game folder in the repo based on game name.
+            switch (gameName)
+            {
+                case "Tetris":
+                    GameFilePath = "1";
+                    break;
+                case "Snake":
+                    GameFilePath = "2";
+                    break;
+                case "Pong":
+                    GameFilePath = "3";
+                    break;
+                default:
+                    break;
+            }
+
+            try
+            {
+                // Get and return game code as a string
+                string rawGameCode = await _gameCodeRetrieve.RetrieveGameCode(_repoOwner, _repoName, GameFilePath, _gameCodePath);
+
+                return rawGameCode;
+            }
+            catch (Exception ex)
+            {
+                // Placeholder error code
+                return "Status Code 500, An error occurred while retrieving game code in GameInfoController.";
             }
         }
 

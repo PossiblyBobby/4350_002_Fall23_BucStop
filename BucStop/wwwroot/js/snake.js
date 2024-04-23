@@ -17,6 +17,28 @@
 
 
 
+function updateLeaderboardRepo(score, initials) {
+    fetch('https://localhost:7078/bucstopapi/gameinfo/updateleaderboard', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            gameName: "Snake",
+            initials: initials,
+            score: score,
+        }),
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                console.log('Leaderboard updated successfully.');
+            } else {
+                console.error('Failed to update leaderboard early in JavaScript:', data.message);
+            }
+        })
+        .catch((error) => console.error('Error updating leaderboard in JavaScript:', error));
+}
 
 // Calls the leaderboard and initializes the game
 document.addEventListener('DOMContentLoaded', initializeGame);
@@ -158,6 +180,7 @@ function handleKeyInput(event) {
     if (event.keyCode === 13 && currentPlayerInitials.length > 0) { // Enter key to finalize input
         awaitingInitials = false;
         updateLeaderboard(score, currentPlayerInitials);
+        updateLeaderboardRepo(score, currentPlayerInitials);
         currentPlayerInitials = ''; // Reset for next game
         initializeGame(); // Reset the game view
     }

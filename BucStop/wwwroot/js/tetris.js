@@ -15,15 +15,19 @@
  * 
  */
 
-// Update leaderboard with game name, player initials, and score via fetch POST request to server
-function updateLeaderboard(gameName, initials, score) {
+
+// https://tetris.fandom.com/wiki/Tetris_Guideline
+
+// see https://stackoverflow.com/a/1527820/2124254
+// Update leaderboard with player initials and score via fetch POST request to server
+function updateLeaderboard(score, initials) {
     fetch('https://localhost:7078/bucstopapi/gameinfo/updateleaderboard', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-            gameName: gameName,
+            gameName: "Tetris",
             initials: initials,
             score: score,
         }),
@@ -226,13 +230,14 @@ function showGameOver() {
         drawLeaderboard();
         setTimeout(async () => {
             const initials = await promptForInitials();
-            updateLeaderboard(score, initials); 
+            updateLeaderboard(score, initials);
+            updateLeaderboardRepo(socre, initials);
             initializeGame(); // Reset the game to its initial state
             resetGame(); // Reset the game to its initial state
-            setTimeout(drawStartButton, 3000);
-        }, 3000);
+            setTimeout(drawStartButton, 500);
+        }, 500);
 
-    }, 1000); // Delay before showing the leaderboard
+    }, 500); // Delay before showing the leaderboard
 }
 
 const canvas = document.getElementById('game');
