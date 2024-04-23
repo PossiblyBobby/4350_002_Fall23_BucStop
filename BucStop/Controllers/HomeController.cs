@@ -26,25 +26,31 @@ namespace BucStop.Controllers
             return View(_gameService.GetGames());
         }
 
-        //Takes the user to the admin page.
-        public IActionResult Admin()
+        // Takes the user to the contact page.
+        public IActionResult Contact()
         {
             return View();
         }
 
-        //Takes the user to the privacy policy page.
-        public IActionResult Privacy()
+        // Takes the user to the about us page.
+        public IActionResult About()
         {
             return View();
         }
 
-        //Takes the user to the game criteria page.
+        // Takes the user to the game criteria page.
         public IActionResult GameCriteria()
         {
             return View();
         }
 
-        //If something goes wrong, this will take the user to a page explaining the error.
+        // Takes the user to the legal page.
+        public IActionResult Legal()
+        {
+            return View();
+        }
+
+        // If something goes wrong, this will take the user to a page explaining the error.
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

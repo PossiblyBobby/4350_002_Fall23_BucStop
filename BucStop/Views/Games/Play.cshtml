@@ -1,6 +1,7 @@
 ﻿@model BucStop.Models.Game
 
 <!-- This is the page every game is embeded into with the js files(in wwwroot folder) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
 <style>
     canvas {
         padding-left: 0;
@@ -34,6 +35,8 @@
                         else if (Model.Title == "Pong")
                         {
                             <canvas width="400" height="500" id="game" style="border: 1px solid #000000; background-color: gray"></canvas>
+                            
+
                         }
                         else
                         {
@@ -46,6 +49,7 @@
                 </div>
             </div>
 
+            
             <!-- Pills to view a games author, description, and how to play -->
             <ul class="nav nav-tabs" role="tablist">
                 <li class="nav-item" role="presentation">

@@ -10,17 +10,23 @@ namespace BucStop.Controllers
     {
         public string email { get; set; } = string.Empty;
 
+        // Displays login page
         [AllowAnonymous]
         public IActionResult Login()
         {
             return View();
         }
 
+        // Login case handling
         [HttpPost]
         [AllowAnonymous]
         public async Task<IActionResult> Login(string email)
         {
-            if (Regex.IsMatch(email, @"\b[A-Za-z0-9._%+-]+@etsu\.edu\b"))
+            if (string.IsNullOrEmpty(email))
+            {
+                return View();
+            }
+            else if (Regex.IsMatch(email, @"\b[a-z0-9._%+-]+@etsu\.edu\b", RegexOptions.IgnoreCase))
             {
                 // If authentication is successful, create a ClaimsPrincipal and sign in the user
                 var claims = new[]
@@ -45,6 +51,7 @@ namespace BucStop.Controllers
             }
         }
 
+        // Logs out the current user by signing them out of the custom authentication scheme and redirects to the login page
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync("CustomAuthenticationScheme");

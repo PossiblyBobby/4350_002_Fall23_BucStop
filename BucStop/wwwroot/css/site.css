@@ -95,6 +95,27 @@ label {
 }
 
 
+/* Settings and sizing for containers for submit button and input initials container
+    Tried to get it lean more towards middle left of screen.
+*/
+#inputBoxContainer {
+    position: absolute; /* Position absolutely */
+    top: 50%; /* Move to the vertical center */
+    left: 10%; /* Move to the left side */
+    transform: translateY(-50%); /* Center vertically */
+    width: 300px; /* Set the width of the box */
+    padding: 20px; /* Add padding to the box */
+    background-color: #f0f0f0; /* Background color of the box */
+    border-radius: 5px; /* Rounded corners */
+}
+
+#inputBox {
+    display: inline-block; /* Make the box occupy only the necessary width */
+}
+
+#leaderboard {
+    margin-top: 20px; /* Add space above the leaderboard */
+}
 
 
    
